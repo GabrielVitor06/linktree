@@ -8,7 +8,7 @@ export default {
   schema: "lib/schema.ts",
   // driver: "turso",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
-    authToken: process.env.DATABASE_AUTH_TOKEN,
+    url: process.env.NEXT_PUBLIC_DATABASE_URL!,
+    authToken: process.env.NEXT_PUBLIC_DATABASE_AUTH_TOKEN,
   },
 } satisfies Config;

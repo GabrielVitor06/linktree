@@ -9,7 +9,8 @@ import { eq } from "drizzle-orm";
 export const revalidate = 10;
 
 export async function getServer({ params }: { params: { name: string } }) {
-  console.log("Params:", params.name); // Verifique o valor do nome
+  console.log("Params:", params.name);
+
   const user = await db
     .select({
       id: users.id,
@@ -21,14 +22,13 @@ export async function getServer({ params }: { params: { name: string } }) {
     .get();
 
   if (!user) {
-    // Se o usuário não foi encontrado, retorne uma resposta de erro
     return { notFound: true };
   }
 
   const userLinks = await db
     .select({
       id: forms.id,
-      text: forms.text,
+      title: forms.text,
       url: forms.url,
     })
     .from(forms)

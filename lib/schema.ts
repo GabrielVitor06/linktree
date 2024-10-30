@@ -8,12 +8,23 @@ export const forms = sqliteTable("form", {
   text: text("text", { length: 255 }).notNull(),
   url: text("url", { length: 255 }).notNull(),
   platforms: text("platforms").notNull(),
-  icons: text("icons"),
-  order: integer("order").default(0), // Definir a ordem de exibição
+  imageUrl: text("imageUrl", { length: 255 }),
 });
 
 export type Form = typeof forms.$inferSelect;
 export type NewForm = typeof forms.$inferInsert;
+
+export const titles = sqliteTable("title", {
+  id: integer("id").primaryKey(),
+  userId: integer("userId")
+    .notNull()
+    .references(() => users.id),
+  subtitulo: text("subtitulo", { length: 255 }).notNull(),
+  title: text("title", { length: 255 }).notNull(),
+});
+
+export type Title = typeof forms.$inferSelect;
+export type NewTitle = typeof forms.$inferInsert;
 
 // Tabela de templates
 export const templates = sqliteTable("templates", {
@@ -29,19 +40,12 @@ export type NewTemplate = typeof templates.$inferInsert;
 // Tabela para salvar a escolha do template do usuário
 export const userTemplateChoices = sqliteTable("user_template_choices", {
   id: integer("id").primaryKey(),
-  userId: text("userId").notNull(),
+  userId: integer("userId").notNull(),
   templateId: integer("templateId").notNull(),
 });
 
 export type UserTemplateChoice = typeof userTemplateChoices.$inferSelect;
 export type NewUserTemplateChoice = typeof userTemplateChoices.$inferInsert;
-
-// export const userTemplateChoicesUniqueConstraint = sqliteTable("user_template_choices_unique_constraint", {
-//   id: integer("id").primaryKey(),
-//   userId: integer("userId").notNull(),
-//   templateId: integer("templateId").notNull(),
-//   unique: [userId, templateId], // Garante a unicidade da combinação
-// });
 
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey(),

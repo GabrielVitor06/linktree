@@ -3,7 +3,7 @@
 "use server";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { forms, NewForm, users, NewUser } from "@/lib/schema";
+import { forms, NewForm, users, NewUser, titles, NewTitle } from "@/lib/schema";
 import db from "@/lib/db";
 import { comparePassword, hashPassword } from "@/lib/password";
 import { cookies } from "next/headers";
@@ -86,7 +86,7 @@ export async function linktree(formData: FormData) {
 
   const userId = Number(session.id);
 
-  // Inserindo usuário
+  // Inserindo links
   let NewForm: NewForm | null = null;
   try {
     [NewForm] = (await db
@@ -95,10 +95,7 @@ export async function linktree(formData: FormData) {
         userId: userId, // Define o userId aqui
         url: String(formData.get("url")),
         text: String(formData.get("text")),
-        // platforms: String(formData.getAll("platforms")),
         platforms: platforms.join(","),
-        // platforms: JSON.stringify(platforms),
-        order: 1,
       })
       .returning()) as unknown as [NewForm];
   } catch (dbError) {
@@ -113,6 +110,44 @@ export async function linktree(formData: FormData) {
 
   // Sucesso ao criar o formulário
   return { success: true, data: NewForm };
+}
+
+export async function Titles(formData: FormData) {
+  "use server";
+
+  // Obtendo a sessão do usuário
+  const session = await getSession();
+
+  // Verifique se a sessão existe e se contém um ID de usuário
+  if (!session || !session.id) {
+    return { success: false, error: "User not authenticated." };
+  }
+
+  const userId = Number(session.id);
+
+  // Inserindo titulos
+  let NewTitle: NewForm | null = null;
+  try {
+    [NewTitle] = (await db
+      .insert(titles)
+      .values({
+        userId: userId, // Define o userId aqui
+        title: String(formData.get("title")),
+        subtitulo: String(formData.get("subtitulo")),
+      })
+      .returning()) as unknown as [NewForm];
+  } catch (dbError) {
+    console.error("Failed to insert user", dbError);
+    return { success: false, error: "Failed to register user." };
+  }
+
+  // Verificação se o formulário foi criado corretamente
+  if (!NewTitle) {
+    return { success: false, error: "User registration failed." };
+  }
+
+  // Sucesso ao criar o formulário
+  return { success: true, data: NewTitle };
 }
 
 export async function Signup(formData: FormData) {

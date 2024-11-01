@@ -45,18 +45,6 @@ export async function getTemplateById(templateId: number) {
   return template[0] || null;
 }
 
-// Ajuste o caminho para sua instância do banco de dados
-
-export async function getUsernameById(userId: number): Promise<string | null> {
-  const result = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, userId))
-    .execute();
-
-  return result.length > 0 ? result[0].name : null; // Retorna o nome se encontrado, caso contrário, retorna null
-}
-
 // fetchUser.ts
 
 interface User {

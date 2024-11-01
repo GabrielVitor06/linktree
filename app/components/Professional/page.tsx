@@ -137,6 +137,7 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
+import { useRouter } from "next/router";
 
 export default function ProfessionalTemplate() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -145,31 +146,30 @@ export default function ProfessionalTemplate() {
   const [userSubTitle, setSubtitle] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const { username } = router.query; // Captura o username da URL
 
   // useEffect(() => {
   //   const fetchLinks = async () => {
   //     try {
   //       const session = await getSession(); // Obtendo a sessão do usuário
 
-  //       if (session && session.id) {
-  //         const userId = Number(session.id); // Obtendo o ID do usuário da sessão
+  //       // Define um userId padrão caso o usuário não esteja autenticado
+  //       const userId = session && session.id ? Number(session.id) : 7; // Substitua 7 pelo ID padrão desejado
 
-  //         // Buscar os links e títulos usando o userId
-  //         const fetchedLinks = await fetchUserLinks(userId);
-  //         const fetchedTitles = await fetchUserTitles(userId);
+  //       // Buscar os links e títulos usando o userId
+  //       const fetchedLinks = await fetchUserLinks(userId);
+  //       const fetchedTitles = await fetchUserTitles(userId);
 
-  //         // Verificar se os títulos foram encontrados
-  //         if (fetchedTitles && fetchedTitles[0]) {
-  //           setUserTitle(fetchedTitles[0].title); // Define o título do usuário
-  //           setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
-  //         } else {
-  //           setError("Título ou subtítulo não encontrados.");
-  //         }
-
-  //         setLinks(fetchedLinks); // Atualizar a lista de links
+  //       // Verificar se os títulos foram encontrados
+  //       if (fetchedTitles && fetchedTitles[0]) {
+  //         setUserTitle(fetchedTitles[0].title); // Define o título do usuário
+  //         setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
   //       } else {
-  //         setError("User not authenticated.");
+  //         setError("Título ou subtítulo não encontrados.");
   //       }
+
+  //       setLinks(fetchedLinks); // Atualizar a lista de links
   //     } catch (error) {
   //       setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
   //     } finally {
@@ -179,13 +179,30 @@ export default function ProfessionalTemplate() {
 
   //   fetchLinks();
   // }, []);
+
+  // Função para mapear username para userId
+  const getUserIdByUsername = async (
+    username: string | string[] | undefined
+  ) => {
+    try {
+      const response = await fetch(`/api/getUserId?username=${username}`);
+      const data = await response.json();
+      return data.userId; // Retorna o userId correspondente
+    } catch {
+      setError("Erro ao obter o ID do usuário.");
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const session = await getSession(); // Obtendo a sessão do usuário
+        const userId = await getUserIdByUsername(username); // Obtemos o userId pelo username
 
-        // Define um userId padrão caso o usuário não esteja autenticado
-        const userId = session && session.id ? Number(session.id) : 7; // Substitua 7 pelo ID padrão desejado
+        if (!userId) {
+          setError("Usuário não encontrado.");
+          return;
+        }
 
         // Buscar os links e títulos usando o userId
         const fetchedLinks = await fetchUserLinks(userId);
@@ -201,14 +218,14 @@ export default function ProfessionalTemplate() {
 
         setLinks(fetchedLinks); // Atualizar a lista de links
       } catch (error) {
-        setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
+        setError("Erro ao carregar os dados.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLinks();
-  }, []);
+    if (username) fetchLinks(); // Garante que username esteja disponível antes de buscar os dados
+  }, [username]); // Dependência para refazer a busca ao mudar o username
 
   const getIcon = (platform: string) => {
     switch (platform) {

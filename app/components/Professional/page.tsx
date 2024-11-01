@@ -137,7 +137,9 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { getUserIdByUsernames } from "@/lib/publicActions";
+import { useParams } from "next/navigation";
 
 export default function ProfessionalTemplate() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -146,8 +148,49 @@ export default function ProfessionalTemplate() {
   const [userSubTitle, setSubtitle] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
-  const { username } = router.query; // Captura o username da URL
+  const { username } = useParams();
+
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        if (typeof username === "string") {
+          // Garante que username seja uma string
+          // Busca o userId baseado no username
+          const userId = await getUserIdByUsernames(username);
+
+          if (userId === null) {
+            setError("Usuário não encontrado.");
+            return; // Para se o usuário não for encontrado
+          }
+
+          // Buscar os links e títulos usando o userId encontrado
+          const fetchedLinks = await fetchUserLinks(userId);
+          const fetchedTitles = await fetchUserTitles(userId);
+
+          // Verificar se os títulos foram encontrados
+          if (fetchedTitles && fetchedTitles[0]) {
+            setUserTitle(fetchedTitles[0].title); // Define o título do usuário
+            setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
+          } else {
+            setError("Título ou subtítulo não encontrados.");
+          }
+
+          setLinks(fetchedLinks); // Atualizar a lista de links
+        }
+      } catch (error) {
+        setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (username) {
+      // Verifica se o username está definido antes de buscar os links
+      fetchLinks();
+    }
+  }, [username]); // O efeito depende do username
 
   // useEffect(() => {
   //   const fetchLinks = async () => {
@@ -179,53 +222,6 @@ export default function ProfessionalTemplate() {
 
   //   fetchLinks();
   // }, []);
-
-  // Função para mapear username para userId
-  const getUserIdByUsername = async (
-    username: string | string[] | undefined
-  ) => {
-    try {
-      const response = await fetch(`/api/getUserId?username=${username}`);
-      const data = await response.json();
-      return data.userId; // Retorna o userId correspondente
-    } catch {
-      setError("Erro ao obter o ID do usuário.");
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    const fetchLinks = async () => {
-      try {
-        const userId = await getUserIdByUsername(username); // Obtemos o userId pelo username
-
-        if (!userId) {
-          setError("Usuário não encontrado.");
-          return;
-        }
-
-        // Buscar os links e títulos usando o userId
-        const fetchedLinks = await fetchUserLinks(userId);
-        const fetchedTitles = await fetchUserTitles(userId);
-
-        // Verificar se os títulos foram encontrados
-        if (fetchedTitles && fetchedTitles[0]) {
-          setUserTitle(fetchedTitles[0].title); // Define o título do usuário
-          setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
-        } else {
-          setError("Título ou subtítulo não encontrados.");
-        }
-
-        setLinks(fetchedLinks); // Atualizar a lista de links
-      } catch (error) {
-        setError("Erro ao carregar os dados.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (username) fetchLinks(); // Garante que username esteja disponível antes de buscar os dados
-  }, [username]); // Dependência para refazer a busca ao mudar o username
 
   const getIcon = (platform: string) => {
     switch (platform) {

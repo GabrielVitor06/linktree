@@ -14,7 +14,6 @@ import {
 export default function LinkTree() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

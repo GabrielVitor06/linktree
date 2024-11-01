@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const TemplateSelector: React.FC = () => {
   const [templates, setTemplates] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   const userId = "123"; // Substitua pela lógica para obter o ID do usuário autenticado
 
   useEffect(() => {
@@ -43,7 +45,8 @@ const TemplateSelector: React.FC = () => {
       const result = await response.json();
       if (result.filePath) {
         alert(result.message);
-        window.location.href = `/components/${result.filePath}`; // Redirecione para a rota do template selecionado
+        router.push("/Dashboard");
+        // window.location.href = `/components/${result.filePath}`; // Redirecione para a rota do template selecionado
       } else {
         alert("Erro: Caminho do template não encontrado");
       }

@@ -1,105 +1,123 @@
-// pages/black-white.tsx
-import { FaInstagram, FaTwitter, FaGithub } from "react-icons/fa";
-import Image from "next/image";
+"use client";
+// import Image from "next/image";
 import Link from "next/link";
-import db from "@/lib/db";
-import { forms, users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { useEffect, useState } from "react";
+import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
+import { fetchUserLinks, fetchUserTitles } from "@/lib/linkActions"; // Função para buscar os links do usuário
+import Image from "next/image";
+import {
+  FaTwitter,
+  FaLinkedin,
+  FaWhatsapp,
+  FaFacebook,
+  FaInstagram,
+} from "react-icons/fa";
 
-export const revalidate = 10;
+export default function Blac() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [links, setLinks] = useState<any[]>([]); // Substitua 'any' pelo tipo adequado
+  const [userTitle, setUserTitle] = useState<string | null>(null);
+  const [userSubTitle, setSubtitle] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export async function getServer({ params }: { params: { name: string } }) {
-  console.log("Params:", params.name);
+  useEffect(() => {
+    const fetchLinks = async () => {
+      const session = await getSession(); // Obter a sessão do usuário
 
-  const user = await db
-    .select({
-      id: users.id,
-      username: users.name,
-      email: users.email,
-    })
-    .from(users)
-    .where(eq(users.name, params.name))
-    .get();
+      if (session && session.id) {
+        const userId = Number(session.id); // Converta session.id para number
+        const fetchedLinks = await fetchUserLinks(userId); // Buscar os links do usuário
 
-  if (!user) {
-    return { notFound: true };
-  }
+        // Buscar títulos do usuário
+        const fetchedTitles = await fetchUserTitles(userId);
 
-  const userLinks = await db
-    .select({
-      id: forms.id,
-      title: forms.text,
-      url: forms.url,
-    })
-    .from(forms)
-    .where(eq(forms.userId, user.id))
-    .all();
+        // Verificar se os títulos foram encontrados
+        if (fetchedTitles && fetchedTitles[0]) {
+          setUserTitle(fetchedTitles[0].title); // Define o título do usuário
+          setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
+        } else {
+          setError("Título ou subtítulo não encontrados.");
+        }
 
-  return { props: { user, userLinks } };
-}
+        setLinks(fetchedLinks); // Atualizar a lista de links
+      } else {
+        setError("User not authenticated.");
+      }
+      setLoading(false);
+    };
 
-// Componente de renderização
-export default function BlackWhiteTemplate({
-  // user,
-  userLinks,
-}: {
-  user: { id: number; name: string; email: string };
-  userLinks: { id: number; title: string; url: string }[];
-}) {
+    fetchLinks();
+  }, []);
+
+  const getIcon = (platform: string) => {
+    switch (platform) {
+      case "Twitter":
+        return <FaTwitter />;
+      case "LinkedIn":
+        return <FaLinkedin />;
+      case "WhatsApp":
+        return <FaWhatsapp />;
+      case "Facebook":
+        return <FaFacebook />;
+      case "Instagram":
+        return <FaInstagram />;
+      default:
+        return null;
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
   return (
-    <div className="min-h-screen bg-black flex justify-center items-center ">
-      {/* <h1>{user.name}</h1> */}
-      {userLinks.map((link) => (
-        <div
-          key={link.id}
-          className="w-full max-w-xl m-6 text-white flex flex-col items-center justify-center p-24 rounded-2xl bg-white bg-opacity-10 backdrop-blur-md"
-        >
-          <Image
-            className="w-24 h-24 rounded-full"
-            src="/avatar.jpg"
-            alt="Profile Avatar"
-            width={150}
-            height={150}
-          />
-          <h1 className="mt-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">
-            {link.title}
-          </h1>
-          <p className="text-gray-400">Creative Developer</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex justify-center items-center">
+      {error && <p className="text-red-500">{error}</p>}
+      <div className="font-sans m-2 text-white flex flex-col justify-center p-6 rounded-2xl">
+        <div>
+          {/* Exibindo a imagem de perfil do primeiro link apenas uma vez */}
+          {links.length > 0 && links[0].imageUrl && (
+            <div className="flex justify-center">
+              <Image
+                className="w-24 h-24 rounded-full border-4 border-white"
+                src={links[0].imageUrl} // Use a imagem do primeiro link
+                alt="Profile Avatar"
+                width={150}
+                height={150}
+              />
+            </div>
+          )}
 
-          <div className="mt-12 space-y-8 w-full max-w-xs text-black text-md sm:text-lg md:text-xl lg:text-2xl">
-            <Link
-              href={link.url}
-              className="block w-full bg-zinc-300 py-3 rounded-2xl text-center font-semibold hover:bg-gray-300"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="#"
-              className="block w-full bg-zinc-300 py-3 rounded-2xl text-center font-semibold hover:bg-gray-300"
-            >
-              Contact
-            </Link>
-            <Link
-              href="#"
-              className="block w-full bg-zinc-300 py-3 rounded-2xl text-center font-semibold hover:bg-gray-300"
-            >
-              LinkedIn
-            </Link>
-            <Link
-              href="#"
-              className="block w-full bg-zinc-300 py-3 rounded-2xl text-center font-semibold hover:bg-gray-300"
-            >
-              Loja
-            </Link>
+          {/* Exibindo título e subtítulo do usuário */}
+          <div className="flex flex-col items-center">
+            <h1 className="mt-4 text-lg font-semibold">{userTitle}</h1>
+            <h1 className="">{userSubTitle}</h1>
           </div>
 
-          <div className="mt-16 flex space-x-4">
-            <FaInstagram className="w-6 h-6" />
-            <FaTwitter className="w-6 h-6" />
-            <FaGithub className="w-6 h-6" />
+          {/* Mapeando apenas os links */}
+          <div className="mt-6">
+            {links.map((link) => (
+              <div
+                key={link.id}
+                className="mt-4 text-white text-md sm:text-lg md:text-xl lg:text-2xl"
+              >
+                <div className="flex items-center shadow-lg border border-zinc-950 bg-zinc-800 p-1.5 pl-9 pr-9 rounded-2xl">
+                  {getIcon(link.platforms)}
+                  <Link
+                    href={link.url}
+                    className="ml-2 text-blue-500 hover:underline"
+                  >
+                    {link.text}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 flex justify-center space-x-4 font-sans font-extrabold">
+            Linktree
           </div>
         </div>
-      ))}
+      </div>
     </div>
   );
 }

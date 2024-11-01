@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 // import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
+// import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
 import { fetchUserLinks, fetchUserTitles } from "@/lib/linkActions"; // Função para buscar os links do usuário
 import Image from "next/image";
 import {
@@ -21,16 +22,44 @@ export default function ProfessionalTemplate() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // useEffect(() => {
+  //   const fetchLinks = async () => {
+  //     const session = await getSession(); // Obter a sessão do usuário
+
+  //     if (session && session.id) {
+  //       const userId = Number(session.id); // Converta session.id para number
+  //       const fetchedLinks = await fetchUserLinks(userId); // Buscar os links do usuário
+
+  //       // Buscar títulos do usuário
+  //       const fetchedTitles = await fetchUserTitles(userId);
+
+  //       // Verificar se os títulos foram encontrados
+  //       if (fetchedTitles && fetchedTitles[0]) {
+  //         setUserTitle(fetchedTitles[0].title); // Define o título do usuário
+  //         setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
+  //       } else {
+  //         setError("Título ou subtítulo não encontrados.");
+  //       }
+
+  //       setLinks(fetchedLinks); // Atualizar a lista de links
+  //     } else {
+  //       setError("User not authenticated.");
+  //     }
+  //     setLoading(false);
+  //   };
+
+  //   fetchLinks();
+  // }, []);
+
   useEffect(() => {
     const fetchLinks = async () => {
-      const session = await getSession(); // Obter a sessão do usuário
+      try {
+        // Você pode definir um `userId` padrão ou remover completamente o parâmetro se a busca for para todos os usuários
+        const defaultUserId = 7; // Defina um `userId` padrão ou adapte a lógica de busca conforme necessário
 
-      if (session && session.id) {
-        const userId = Number(session.id); // Converta session.id para number
-        const fetchedLinks = await fetchUserLinks(userId); // Buscar os links do usuário
-
-        // Buscar títulos do usuário
-        const fetchedTitles = await fetchUserTitles(userId);
+        // Buscar os links e títulos usando o `userId` padrão
+        const fetchedLinks = await fetchUserLinks(defaultUserId);
+        const fetchedTitles = await fetchUserTitles(defaultUserId);
 
         // Verificar se os títulos foram encontrados
         if (fetchedTitles && fetchedTitles[0]) {
@@ -41,10 +70,11 @@ export default function ProfessionalTemplate() {
         }
 
         setLinks(fetchedLinks); // Atualizar a lista de links
-      } else {
-        setError("User not authenticated.");
+      } catch (error) {
+        setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchLinks();

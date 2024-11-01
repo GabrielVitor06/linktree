@@ -58,7 +58,7 @@ export default function Cadastro() {
     const result = await SignIn(email, password);
 
     if (result.success) {
-      router.push("/Dashboard");
+      router.push("/componentesDashboard/escolherTela");
     } else {
       setError(result.error || "Erro desconhecido.");
     }

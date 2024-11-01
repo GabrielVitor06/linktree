@@ -15,7 +15,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Linktree",
-  description: "Crie seu linktree.",
+  description: "Crie seu Linktree.",
 };
 
 export default function RootLayout({

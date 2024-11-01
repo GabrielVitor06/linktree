@@ -25,10 +25,10 @@ export default function Cadastro() {
 
   return (
     <>
-      <section className="flex justify-center">
+      <section className="flex justify-center m-4 mt-6 p-2">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/3"
+          className="bg-white shadow-md rounded w-full max-w-2xl"
         >
           <h2 className="text-2xl font-bold mb-4 text-center">Cadastro</h2>
           {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
@@ -77,13 +77,13 @@ export default function Cadastro() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-8">
             <Link href="/login" className="text-blue-500 hover:underline">
               Já possui uma conta?
             </Link>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline"
             >
               Cadastrar
             </button>

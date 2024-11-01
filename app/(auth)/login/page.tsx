@@ -9,31 +9,6 @@ export default function Cadastro() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-
-  //   const formData = new FormData(event.currentTarget);
-  //   const email = formData.get("email");
-  //   const password = formData.get("password");
-
-  //   // Verifique se o email e a senha não são nulos
-  //   if (typeof email !== "string" || typeof password !== "string") {
-  //     setError("Email e senha devem ser fornecidos.");
-  //     return;
-  //   }
-
-  //   console.log("Email:", email);
-  //   console.log("Senha:", password);
-
-  //   const result = await SignIn(email, password);
-
-  //   if (result.success) {
-  //     router.push("/(auth)/login");
-  //   } else {
-  //     setError(result.error);
-  //   }
-  // };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -52,9 +27,6 @@ export default function Cadastro() {
       return;
     }
 
-    console.log("Email:", email);
-    console.log("Senha:", password);
-
     const result = await SignIn(email, password);
 
     if (result.success) {
@@ -66,10 +38,10 @@ export default function Cadastro() {
 
   return (
     <>
-      <section className="flex justify-center">
+      <section className="flex justify-center m-4 p-2">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/3"
+          className="bg-white shadow-md rounded w-full max-w-2xl"
         >
           <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
           {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
@@ -118,13 +90,13 @@ export default function Cadastro() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-8">
             <Link href="/cadastro" className="text-blue-500 hover:underline">
               Não possui uma conta?
             </Link>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline"
             >
               Entrar
             </button>

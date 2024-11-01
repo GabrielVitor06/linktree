@@ -136,7 +136,6 @@ import {
   FaFacebook,
   FaInstagram,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { getUserIdByUsernames } from "@/lib/publicActions";
 import { useParams } from "next/navigation";
 
@@ -189,37 +188,6 @@ export default function ProfessionalTemplate() {
       fetchLinks();
     }
   }, [username]); // O efeito depende do username
-
-  // useEffect(() => {
-  //   const fetchLinks = async () => {
-  //     try {
-  //       const session = await getSession(); // Obtendo a sessão do usuário
-
-  //       // Define um userId padrão caso o usuário não esteja autenticado
-  //       const userId = session && session.id ? Number(session.id) : 7; // Substitua 7 pelo ID padrão desejado
-
-  //       // Buscar os links e títulos usando o userId
-  //       const fetchedLinks = await fetchUserLinks(userId);
-  //       const fetchedTitles = await fetchUserTitles(userId);
-
-  //       // Verificar se os títulos foram encontrados
-  //       if (fetchedTitles && fetchedTitles[0]) {
-  //         setUserTitle(fetchedTitles[0].title); // Define o título do usuário
-  //         setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
-  //       } else {
-  //         setError("Título ou subtítulo não encontrados.");
-  //       }
-
-  //       setLinks(fetchedLinks); // Atualizar a lista de links
-  //     } catch (error) {
-  //       setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchLinks();
-  // }, []);
 
   const getIcon = (platform: string) => {
     switch (platform) {

@@ -136,7 +136,6 @@ import {
   FaFacebook,
   FaInstagram,
 } from "react-icons/fa";
-import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
 import { useRouter } from "next/navigation";
 import { getUserIdByUsernames } from "@/lib/publicActions";
 import { useParams } from "next/navigation";
@@ -149,7 +148,6 @@ export default function ProfessionalTemplate() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const router = useRouter();
   const { username } = useParams();
 
   useEffect(() => {

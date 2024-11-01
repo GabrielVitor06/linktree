@@ -146,30 +146,60 @@ export default function ProfessionalTemplate() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // useEffect(() => {
+  //   const fetchLinks = async () => {
+  //     try {
+  //       const session = await getSession(); // Obtendo a sessão do usuário
+
+  //       if (session && session.id) {
+  //         const userId = Number(session.id); // Obtendo o ID do usuário da sessão
+
+  //         // Buscar os links e títulos usando o userId
+  //         const fetchedLinks = await fetchUserLinks(userId);
+  //         const fetchedTitles = await fetchUserTitles(userId);
+
+  //         // Verificar se os títulos foram encontrados
+  //         if (fetchedTitles && fetchedTitles[0]) {
+  //           setUserTitle(fetchedTitles[0].title); // Define o título do usuário
+  //           setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
+  //         } else {
+  //           setError("Título ou subtítulo não encontrados.");
+  //         }
+
+  //         setLinks(fetchedLinks); // Atualizar a lista de links
+  //       } else {
+  //         setError("User not authenticated.");
+  //       }
+  //     } catch (error) {
+  //       setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchLinks();
+  // }, []);
   useEffect(() => {
     const fetchLinks = async () => {
       try {
         const session = await getSession(); // Obtendo a sessão do usuário
 
-        if (session && session.id) {
-          const userId = Number(session.id); // Obtendo o ID do usuário da sessão
+        // Define um userId padrão caso o usuário não esteja autenticado
+        const userId = session && session.id ? Number(session.id) : 7; // Substitua 7 pelo ID padrão desejado
 
-          // Buscar os links e títulos usando o userId
-          const fetchedLinks = await fetchUserLinks(userId);
-          const fetchedTitles = await fetchUserTitles(userId);
+        // Buscar os links e títulos usando o userId
+        const fetchedLinks = await fetchUserLinks(userId);
+        const fetchedTitles = await fetchUserTitles(userId);
 
-          // Verificar se os títulos foram encontrados
-          if (fetchedTitles && fetchedTitles[0]) {
-            setUserTitle(fetchedTitles[0].title); // Define o título do usuário
-            setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
-          } else {
-            setError("Título ou subtítulo não encontrados.");
-          }
-
-          setLinks(fetchedLinks); // Atualizar a lista de links
+        // Verificar se os títulos foram encontrados
+        if (fetchedTitles && fetchedTitles[0]) {
+          setUserTitle(fetchedTitles[0].title); // Define o título do usuário
+          setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
         } else {
-          setError("User not authenticated.");
+          setError("Título ou subtítulo não encontrados.");
         }
+
+        setLinks(fetchedLinks); // Atualizar a lista de links
       } catch (error) {
         setError("Erro ao carregar os dados."); // Erro genérico para falhas de fetch
       } finally {

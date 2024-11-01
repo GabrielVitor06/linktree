@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function Cadastro() {
+export default function Login() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +38,7 @@ export default function Cadastro() {
 
   return (
     <>
-      <section className="flex justify-center m-4 p-2">
+      <section className="flex justify-center items-center m-4 p-2">
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded w-full max-w-2xl p-4"
@@ -56,21 +56,7 @@ export default function Cadastro() {
               type="email"
               id="email"
               name="email"
-              required
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Nome
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
+              placeholder="Digite seu e-mail"
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -86,6 +72,7 @@ export default function Cadastro() {
               type="password"
               id="password"
               name="password"
+              placeholder="Digite sua senha"
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />

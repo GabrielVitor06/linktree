@@ -124,14 +124,6 @@ export default function MyLinks() {
   };
   return (
     <>
-      <div className="flex justify-center m-4">
-        <button
-          onClick={toggleExpand}
-          className=" text-black border-zinc-100 shadow-lg border w-full max-w-2xl p-2 rounded-lg lg:text-lg xl:text-xl 2xl:text-2xl  font-bold"
-        >
-          LINKS
-        </button>
-      </div>
       <div
         className={`${
           isExpanded
@@ -141,7 +133,7 @@ export default function MyLinks() {
       >
         <div
           className={`${
-            isExpanded ? "h-screen w-screen p-4 sm:pl-44 sm:pr-44 sm:pt-32" : ""
+            isExpanded ? "h-screen w-screen p-4 sm:pl-44 sm:pr-44 sm:pt-12" : ""
           }`}
         >
           <button
@@ -187,7 +179,7 @@ export default function MyLinks() {
               <h1 className="block text-gray-700 font-medium mb-2">
                 Escolha a Plataforma:
               </h1>
-              <div className="flex flex-col mt-4 space-y-2">
+              <div className="flex flex-col mt-4 space-y-2 ">
                 {[
                   {
                     name: "Twitter",
@@ -255,7 +247,7 @@ export default function MyLinks() {
         </div>
       )}
 
-      <div className="flex flex-col items-center mt-10 m-4">
+      <div className="flex flex-col items-center mt-4 m-4">
         <h1 className="text-lg lg:text-xl xl:text-2xl font-bold mb-6">
           Meus Links
         </h1>
@@ -292,6 +284,15 @@ export default function MyLinks() {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="flex justify-center m-4">
+        <button
+          onClick={toggleExpand}
+          className=" text-white  bg-blue-500 hover:bg-blue-600 w-full max-w-2xl p-2 rounded-lg lg:text-lg xl:text-xl 2xl:text-2xl  font-bold"
+        >
+          Adicionar links
+        </button>
       </div>
     </>
   );

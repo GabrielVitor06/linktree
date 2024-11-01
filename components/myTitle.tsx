@@ -97,14 +97,6 @@ export default function MyTitle() {
   };
   return (
     <>
-      <div className="flex justify-center mt-12 m-4">
-        <button
-          onClick={toggleExpand}
-          className=" text-black border-zinc-100 shadow-lg border w-full max-w-2xl p-2 rounded-lg lg:text-lg xl:text-xl 2xl:text-2xl  font-bold"
-        >
-          TÍTULOS
-        </button>
-      </div>
       <div
         className={`${
           isExpanded
@@ -184,7 +176,7 @@ export default function MyTitle() {
         </div>
       )}
 
-      <div className="flex flex-col items-center mt-10 m-4">
+      <div className="flex flex-col items-center mt-6 m-4">
         <h1 className="text-lg lg:text-xl xl:text-2xl font-bold mb-6">
           Meus Títulos
         </h1>
@@ -228,6 +220,15 @@ export default function MyTitle() {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="flex justify-center  m-4">
+        <button
+          onClick={toggleExpand}
+          className=" text-white bg-blue-500 hover:bg-blue-600 w-full max-w-2xl p-2 rounded-lg lg:text-lg xl:text-xl 2xl:text-2xl  font-bold"
+        >
+          Adicionar títulos
+        </button>
       </div>
     </>
   );

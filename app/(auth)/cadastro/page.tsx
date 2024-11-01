@@ -17,15 +17,15 @@ export default function Cadastro() {
     const result = await Signup(formData);
 
     if (result.success) {
-      router.push("/login");
+      router.push("/componentesDashboard/escolherTela");
     } else {
-      setError(result.error);
+      setError(result.error || "Erro desconhecido.");
     }
   };
 
   return (
     <>
-      <section className="flex justify-center m-4 mt-6 p-2">
+      <section className="flex justify-center items-center m-4 mt-6 p-2">
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded w-full max-w-2xl p-4"
@@ -43,6 +43,7 @@ export default function Cadastro() {
               type="email"
               id="email"
               name="email"
+              placeholder="Digite seu e-mail"
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -58,6 +59,7 @@ export default function Cadastro() {
               type="text"
               id="name"
               name="name"
+              placeholder="Digite seu nome"
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -73,6 +75,7 @@ export default function Cadastro() {
               type="password"
               id="password"
               name="password"
+              placeholder="Digite sua senha"
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />

@@ -39,7 +39,7 @@ export default function LinkTree() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h1 className="text-lg lg:text-xl xl:text-2xl font-bold mb-8 text-gray-800">
+      <h1 className="text-lg lg:text-xl xl:text-2xl font-bold mb-6 text-gray-800">
         LINKS
       </h1>
 
@@ -75,8 +75,8 @@ export default function LinkTree() {
           />
         </div>
 
-        <h1 className="block text-gray-700 font-medium mb-2">Escolha:</h1>
-        <div className="flex flex-col mt-4 space-y-2">
+        <h1 className="block text-gray-700 font-medium mb-2 ">Escolha:</h1>
+        <div className="flex flex-col mt-4 space-y-2 sm:grid sm:grid-cols-3 sm:flex-none">
           {[
             { name: "Twitter", icon: <FaTwitter className="text-blue-500" /> },
             {

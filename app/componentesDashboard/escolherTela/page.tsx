@@ -58,7 +58,7 @@ const TemplateSelector: React.FC = () => {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        <h1 className="text-center lg:text-lg xl:text-xl 2xl:text-2xl font-bold text-gray-800 mb-6">
           Escolha um Template
         </h1>
         {error && <p className="text-red-500">{error}</p>}
@@ -69,7 +69,7 @@ const TemplateSelector: React.FC = () => {
                 onClick={() => handleSelectTemplate(template.id)}
                 className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow w-full text-center border border-gray-200 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >
-                <p className="text-lg font-semibold text-gray-700">
+                <p className="lg:text-lg xl:text-xl 2xl:text-2xl font-semibold text-gray-700">
                   {template.name}
                 </p>
               </button>

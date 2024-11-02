@@ -8,6 +8,7 @@ import { useState } from "react";
 export default function Login() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,7 +17,6 @@ export default function Login() {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    // Verifique se o email e a senha não são nulos ou vazios
     if (
       typeof email !== "string" ||
       !email.trim() ||
@@ -27,10 +27,13 @@ export default function Login() {
       return;
     }
 
+    setLoading(true);
+
     const result = await SignIn(email, password);
+    setLoading(false);
 
     if (result.success) {
-      router.push("/componentesDashboard/escolherTela");
+      router.push("/Dashboard");
     } else {
       setError(result.error || "Erro desconhecido.");
     }
@@ -85,7 +88,7 @@ export default function Login() {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded focus:outline-none focus:shadow-outline"
             >
-              Entrar
+              {loading ? "Entrando..." : "Entrar"}
             </button>
           </div>
         </form>

@@ -2,6 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Menu from "@/components/navbar";
 
 const TemplateSelector: React.FC = () => {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -56,28 +57,32 @@ const TemplateSelector: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div>
-        <h1 className="text-center lg:text-lg xl:text-xl 2xl:text-2xl font-bold text-gray-800 mb-6">
-          Escolha um Template
-        </h1>
-        {error && <p className="text-red-500">{error}</p>}
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-          {templates.map((template) => (
-            <li key={template.id} className="flex flex-col items-center">
-              <button
-                onClick={() => handleSelectTemplate(template.id)}
-                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow w-full text-center border border-gray-200 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                <p className="lg:text-lg xl:text-xl 2xl:text-2xl font-semibold text-gray-700">
-                  {template.name}
-                </p>
-              </button>
-            </li>
-          ))}
-        </ul>
+    <>
+      <Menu />
+      <br />
+      <div className="flex justify-center items-center min-h-screen">
+        <div>
+          <h1 className="text-center lg:text-lg xl:text-xl 2xl:text-2xl font-bold text-gray-800 mb-6">
+            Escolha um Template
+          </h1>
+          {error && <p className="text-red-500">{error}</p>}
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+            {templates.map((template) => (
+              <li key={template.id} className="flex flex-col items-center">
+                <button
+                  onClick={() => handleSelectTemplate(template.id)}
+                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow w-full text-center border border-gray-200 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  <p className="lg:text-lg xl:text-xl 2xl:text-2xl font-semibold text-gray-700">
+                    {template.name}
+                  </p>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

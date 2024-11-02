@@ -18,7 +18,8 @@ export const titles = sqliteTable("title", {
   id: integer("id").primaryKey(),
   userId: integer("userId")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id)
+    .unique(),
   subtitulo: text("subtitulo", { length: 255 }).notNull(),
   title: text("title", { length: 255 }).notNull(),
 });

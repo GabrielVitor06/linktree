@@ -64,10 +64,10 @@ export default function FollowButton() {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className=" flex justify-center">
       <Link href={`/${username}`}>
-        <button className=" text-white  bg-sky-400 hover:bg-sky-500 w-full max-w-2xl p-2 rounded-lg lg:text-lg xl:text-xl 2xl:text-2xl  font-bold">
-          Ver perfil de {username}
+        <button className=" text-black lg:text-lg xl:text-xl 2xl:text-2xl">
+          Tela {username}
         </button>
       </Link>
     </div>

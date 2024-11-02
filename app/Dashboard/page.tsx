@@ -1,15 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import MyLinks from "@/components/myLinks";
 import MyTitle from "@/components/myTitle";
-import FollowButton from "@/components/buttonLink";
+import Menu from "@/components/navbar";
 
 export default function Dashboard() {
   return (
     <>
+      <Menu />
+      <br />
+      <br />
+      <br />
       <MyLinks />
       <MyTitle />
-      <FollowButton />
     </>
   );
 }

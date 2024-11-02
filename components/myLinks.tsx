@@ -18,18 +18,15 @@ import {
 import Link from "next/link";
 
 export default function MyLinks() {
-  // Estado para controlar se o div está expandido ou não
-  // Estado para controlar se o div está expandido ou não
   const [isExpanded, setIsExpanded] = useState(false);
-  const [links, setLinks] = useState<any[]>([]); // Substitua 'any' pelo tipo adequado
+  const [links, setLinks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [currentLink, setCurrentLink] = useState<any>(null); // Armazena o link que será editado
+  const [currentLink, setCurrentLink] = useState<any>(null);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [, setMessage] = useState<string | null>(null);
 
-  // Função para alternar o estado
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -71,11 +68,9 @@ export default function MyLinks() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  // Função para deletar um link
   const handleDelete = async (linkId: number) => {
     try {
-      await deleteLink(linkId); // Chama a função deleteLink passando o ID do link
-      // Atualiza a lista de links após a exclusão
+      await deleteLink(linkId);
       setLinks(links.filter((link) => link.id !== linkId));
     } catch (error) {
       console.error("Erro ao deletar o link:", error);
@@ -88,8 +83,6 @@ export default function MyLinks() {
     setSelectedPlatforms(link.platforms ? link.platforms.split(",") : []);
     setIsEditing(true);
   };
-
-  // Função para atualizar um link
 
   const handleEdit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -106,7 +99,6 @@ export default function MyLinks() {
         platforms: selectedPlatforms.join(","),
       });
 
-      // Se a edição foi bem-sucedida, atualize o estado
       setMessage("Link editado com sucesso!");
       setError(null);
       setLinks((prevLinks) =>
@@ -151,8 +143,6 @@ export default function MyLinks() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white m-2 p-6 rounded shadow-lg">
             <h2 className="text-xl font-bold mb-4">Editar Link</h2>
-            {/* {message && <p className="text-green-500">{message}</p>}
-            {error && <p className="text-red-500">{error}</p>} */}
             <form onSubmit={handleEdit}>
               <label className="block mb-2">
                 URL:
@@ -256,7 +246,6 @@ export default function MyLinks() {
             <li key={link.id}>
               <div className="flex items-center p-2 border rounded-lg shadow ">
                 {getIcon(link.platforms)}{" "}
-                {/* Ajuste se platforms não for uma string única */}
                 {link.url ? (
                   <Link
                     href={link.url}
@@ -269,13 +258,13 @@ export default function MyLinks() {
                 )}
                 <div className="flex-grow"></div>
                 <button
-                  onClick={() => handleEditClick(link)} // Chama a função de deletar ao clicar
+                  onClick={() => handleEditClick(link)}
                   className="ml-4 text-yellow-500 hover:underline"
                 >
                   <FaEdit />
                 </button>
                 <button
-                  onClick={() => handleDelete(link.id)} // Chama a função de deletar ao clicar
+                  onClick={() => handleDelete(link.id)}
                   className="ml-4 text-red-500 hover:underline"
                 >
                   <FaRegTrashAlt />

@@ -18,7 +18,7 @@ const TemplateSelector: React.FC = () => {
           throw new Error("Erro ao buscar templates");
         }
         const data = await response.json();
-        console.log(data);
+
         if (Array.isArray(data)) {
           setTemplates(data);
         } else {

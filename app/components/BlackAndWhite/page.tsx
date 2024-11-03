@@ -1,8 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-// import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
 import { fetchUserLinks, fetchUserTitles } from "@/lib/linkActions"; // Função para buscar os links do usuário
 import Image from "next/image";
 import {
@@ -12,43 +12,55 @@ import {
   FaFacebook,
   FaInstagram,
 } from "react-icons/fa";
+import { getUserIdByUsernames } from "@/lib/publicActions";
+import { useParams } from "next/navigation";
 
-export default function Blac() {
+export default function ProfessionalTemplate() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [links, setLinks] = useState<any[]>([]); // Substitua 'any' pelo tipo adequado
+  const [links, setLinks] = useState<any[]>([]);
   const [userTitle, setUserTitle] = useState<string | null>(null);
   const [userSubTitle, setSubtitle] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { username } = useParams();
+
   useEffect(() => {
     const fetchLinks = async () => {
-      const session = await getSession(); // Obter a sessão do usuário
+      try {
+        if (typeof username === "string") {
+          const userId = await getUserIdByUsernames(username);
 
-      if (session && session.id) {
-        const userId = Number(session.id); // Converta session.id para number
-        const fetchedLinks = await fetchUserLinks(userId); // Buscar os links do usuário
+          if (userId === null) {
+            setError("Usuário não encontrado.");
+            return;
+          }
 
-        // Buscar títulos do usuário
-        const fetchedTitles = await fetchUserTitles(userId);
+          const fetchedLinks = await fetchUserLinks(userId);
+          const fetchedTitles = await fetchUserTitles(userId);
 
-        // Verificar se os títulos foram encontrados
-        if (fetchedTitles && fetchedTitles[0]) {
-          setUserTitle(fetchedTitles[0].title); // Define o título do usuário
-          setSubtitle(fetchedTitles[0].subtitulo); // Define o subtítulo do usuário
-        } else {
-          setError("Título ou subtítulo não encontrados.");
+          if (fetchedTitles && fetchedTitles[0]) {
+            setUserTitle(fetchedTitles[0].title);
+            setSubtitle(fetchedTitles[0].subtitulo);
+            setImageUrl(fetchedTitles[0].imageUrl);
+          } else {
+            setError("Título ou subtítulo não encontrados.");
+          }
+
+          setLinks(fetchedLinks);
         }
-
-        setLinks(fetchedLinks); // Atualizar a lista de links
-      } else {
-        setError("User not authenticated.");
+      } catch (error) {
+        setError("Erro ao carregar os dados.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchLinks();
-  }, []);
+    if (username) {
+      fetchLinks();
+    }
+  }, [username]);
 
   const getIcon = (platform: string) => {
     switch (platform) {
@@ -69,17 +81,17 @@ export default function Blac() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex justify-center items-center">
+    <div className="min-h-screen bg-black flex justify-center items-center">
       {error && <p className="text-red-500">{error}</p>}
-      <div className="font-sans m-2 text-white flex flex-col justify-center p-6 rounded-2xl">
+      <div className="font-sans text-white flex flex-col justify-center p-6 rounded-2xl">
         <div>
-          {/* Exibindo a imagem de perfil do primeiro link apenas uma vez */}
-          {links.length > 0 && links[0].imageUrl && (
+          {imageUrl && (
             <div className="flex justify-center">
-              <Image
-                className="w-24 h-24 rounded-full border-4 border-white"
-                src={links[0].imageUrl} // Use a imagem do primeiro link
+              <img
+                className="w-24 h-24 lg:w-28 lg:h-28 xl:w-28 xl:h-32 rounded-full "
+                src={imageUrl}
                 alt="Profile Avatar"
                 width={150}
                 height={150}
@@ -87,13 +99,13 @@ export default function Blac() {
             </div>
           )}
 
-          {/* Exibindo título e subtítulo do usuário */}
           <div className="flex flex-col items-center">
-            <h1 className="mt-4 text-lg font-semibold">{userTitle}</h1>
-            <h1 className="">{userSubTitle}</h1>
+            <h1 className="mt-8 text-lg lg:text-xl xl:text-2xl font-semibold">
+              {userTitle}
+            </h1>
+            <h1 className="text-md lg:text-lg xl:text-xl">{userSubTitle}</h1>
           </div>
 
-          {/* Mapeando apenas os links */}
           <div className="mt-6">
             {links.map((link) => (
               <div

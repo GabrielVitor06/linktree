@@ -134,6 +134,7 @@ export async function Titles(formData: FormData) {
         userId: userId, // Define o userId aqui
         title: String(formData.get("title")),
         subtitulo: String(formData.get("subtitulo")),
+        imageUrl: String(formData.get("imageUrl")),
       })
       .returning()) as unknown as [NewForm];
   } catch (dbError) {

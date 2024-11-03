@@ -8,7 +8,6 @@ export const forms = sqliteTable("form", {
   text: text("text", { length: 255 }).notNull(),
   url: text("url", { length: 255 }).notNull(),
   platforms: text("platforms").notNull(),
-  imageUrl: text("imageUrl", { length: 255 }),
 });
 
 export type Form = typeof forms.$inferSelect;
@@ -20,8 +19,9 @@ export const titles = sqliteTable("title", {
     .notNull()
     .references(() => users.id)
     .unique(),
-  subtitulo: text("subtitulo", { length: 255 }).notNull(),
-  title: text("title", { length: 255 }).notNull(),
+  subtitulo: text("subtitulo", { length: 255 }),
+  title: text("title", { length: 255 }),
+  imageUrl: text("imageUrl", { length: 255 }),
 });
 
 export type Title = typeof forms.$inferSelect;

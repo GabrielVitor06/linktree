@@ -46,8 +46,8 @@ export default function Subcredenciais() {
             type="text"
             name="title"
             id="title"
+            placeholder="Digite seu título"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            required
           />
         </div>
         <div className="mb-2">
@@ -61,8 +61,23 @@ export default function Subcredenciais() {
             type="text"
             name="subtitulo"
             id="subtitulo"
+            placeholder="Digite seu subtítulo"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            required
+          />
+        </div>
+        <div className="mb-2">
+          <label
+            htmlFor="imageUrl"
+            className="block text-gray-700 font-medium mb-2"
+          >
+            URL de imagem
+          </label>
+          <input
+            type="url"
+            name="imageUrl"
+            id="imageUrl"
+            placeholder="Digite sua url de imagem"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
           />
         </div>
 

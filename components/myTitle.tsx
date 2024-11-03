@@ -8,6 +8,13 @@ import { fetchUserTitles, deleteTitle, editarTitle } from "@/lib/linkActions";
 import { FaRegTrashAlt, FaEdit } from "react-icons/fa";
 import Subcredenciais from "@/app/componentesDashboard/subCredenciais/page";
 
+type TitleType = {
+  id: number;
+  title?: string;
+  subtitulo?: string;
+  imageUrl?: string;
+};
+
 export default function MyTitle() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [titles, setTitles] = useState<any[]>([]);
@@ -15,6 +22,7 @@ export default function MyTitle() {
   const [error, setError] = useState<string | null>(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingSubtitle, setIsEditingSubtitle] = useState(false);
+  const [isEditingURL, setIsEditingURL] = useState(false);
   const [currentTitle, setCurrentTitle] = useState<any>(null);
   const [, setMessage] = useState<string | null>(null);
 
@@ -66,6 +74,11 @@ export default function MyTitle() {
     setIsEditingSubtitle(true);
   };
 
+  const handleEditURLClick = (title: any) => {
+    setCurrentTitle(title);
+    setIsEditingURL(true);
+  };
+
   const handleEditTitle = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -108,6 +121,29 @@ export default function MyTitle() {
     }
   };
 
+  const handleEditURL = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      await editarTitle(currentTitle.id, {
+        imageUrl: currentTitle.imageUrl,
+      } as Partial<TitleType>);
+
+      setMessage("URL editada com sucesso!");
+      setTitles((prevtitles) =>
+        prevtitles.map((title) =>
+          title.id === currentTitle.id
+            ? { ...title, imageUrl: currentTitle.imageUrl }
+            : title
+        )
+      );
+      setIsEditingURL(false);
+    } catch (error) {
+      console.error("Erro ao editar o URL:", error);
+      setError("Erro ao editar o URL.");
+      setMessage(null);
+    }
+  };
+
   return (
     <>
       <div
@@ -115,7 +151,7 @@ export default function MyTitle() {
           isExpanded
             ? "w-full fixed inset-0 h-screen bg-white z-10"
             : "w-full  border shadow-lg border-slate-200 rounded-lg hidden"
-        } cursor-pointer transition-all duration-500 ease-in-out bg-white sm:mt-0 `}
+        } cursor-pointer transition-all duration-500 ease-in-out bg-white sm:mt-0 mt-10`}
       >
         <div
           className={`${
@@ -132,7 +168,6 @@ export default function MyTitle() {
         </div>
       </div>
 
-      {/* Interface para Edição de Título */}
       {isEditingTitle && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg">
@@ -169,7 +204,6 @@ export default function MyTitle() {
         </div>
       )}
 
-      {/* Interface para Edição de Subtítulo */}
       {isEditingSubtitle && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg">
@@ -197,6 +231,42 @@ export default function MyTitle() {
               </button>
               <button
                 onClick={() => setIsEditingSubtitle(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded ml-2"
+              >
+                Cancelar
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isEditingURL && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Editar Título</h2>
+            <form onSubmit={handleEditURL}>
+              <label className="block mb-2">
+                URL de imagem:
+                <input
+                  type="text"
+                  value={currentTitle.imageUrl}
+                  onChange={(e) =>
+                    setCurrentTitle({
+                      ...currentTitle,
+                      imageUrl: e.target.value,
+                    })
+                  }
+                  className="border p-2 w-full"
+                />
+              </label>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={() => setIsEditingURL(false)}
                 className="bg-gray-300 text-black px-4 py-2 rounded ml-2"
               >
                 Cancelar
@@ -234,6 +304,22 @@ export default function MyTitle() {
                 <div className="flex-grow"></div>
                 <button
                   onClick={() => handleEditSubtitleClick(title)}
+                  className="ml-4 text-yellow-500 hover:underline"
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  onClick={() => handleDelete(title.id)}
+                  className="ml-4 text-red-500 hover:underline"
+                >
+                  <FaRegTrashAlt />
+                </button>
+              </div>
+              <div className="flex items-center p-4 border rounded-lg shadow">
+                <h1>{title.imageUrl}</h1>
+                <div className="flex-grow"></div>
+                <button
+                  onClick={() => handleEditURLClick(title)}
                   className="ml-4 text-yellow-500 hover:underline"
                 >
                   <FaEdit />

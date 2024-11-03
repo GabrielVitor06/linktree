@@ -121,7 +121,7 @@ export default function MyLinks() {
           isExpanded
             ? "w-full fixed inset-0 h-screen bg-white z-10"
             : "w-full  border shadow-lg border-slate-200 rounded-lg hidden"
-        } cursor-pointer transition-all duration-500 ease-in-out bg-white sm:mt-0 `}
+        } cursor-pointer transition-all duration-500 ease-in-out bg-white sm:mt-0 mt-10`}
       >
         <div
           className={`${

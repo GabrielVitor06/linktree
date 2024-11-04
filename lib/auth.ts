@@ -210,12 +210,13 @@ export async function resetPassword(email: string) {
   }
 
   const code = String(Math.floor(100000 + Math.random() * 900000));
+  const expiresAt = Math.floor(Date.now() / 1000) + 15 * 60; // Em segundos (timestamp)
 
   try {
     await db.insert(otps).values({
       userId: user.id,
       code,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+      expiresAt,
     });
   } catch (error) {
     throw new UnexpectedError(
@@ -254,7 +255,7 @@ export async function confirmPasswordReset(
   } catch {}
 
   if (!userId) {
-    // A random delay prevents the disclosure of a user's existence
+    // Atraso aleatório para prevenir divulgação de existência do usuário
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
 
     throw new Error("O código de segurança fornecido é inválido ou expirou");
@@ -287,7 +288,7 @@ export async function confirmPasswordReset(
     );
   }
 
-  if (!otp || otp.expiresAt <= new Date()) {
+  if (!otp || otp.expiresAt <= Math.floor(Date.now() / 1000)) {
     throw new Error("O código de segurança fornecido é inválido ou expirou");
   }
 

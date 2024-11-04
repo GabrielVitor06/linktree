@@ -4,8 +4,8 @@
 
 import Credenciais from "@/app/componentesDashboard/credenciais/page";
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/actions"; // Função para obter a sessão do usuário
-import { fetchUserLinks, deleteLink, editarLink } from "@/lib/linkActions"; // Função para buscar os links do usuário
+import { getSession } from "@/lib/auth";
+import { fetchUserLinks, deleteLink, editarLink } from "@/lib/linkActions";
 import {
   FaTwitter,
   FaLinkedin,

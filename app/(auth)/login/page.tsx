@@ -1,6 +1,6 @@
 "use client";
 
-import { SignIn } from "@/lib/actions";
+import { SignIn } from "@/lib/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -65,12 +65,21 @@ export default function Login() {
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Senha
-            </label>
+            <div className=" flex">
+              <label
+                htmlFor="password"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Senha
+              </label>
+              <div className="flex-grow"></div>
+              <Link
+                href="/redefinir-senha"
+                className="text-blue-500 hover:underline"
+              >
+                Esqueceu a senha?
+              </Link>
+            </div>
             <input
               type="password"
               id="password"

@@ -1,21 +1,9 @@
-// import Link from "next/link";
-
-// export default function FollowButton({ username }: { username: string }) {
-//   return (
-//     <Link href={`/${username}`}>
-//       <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-//         Ver perfil de {username}
-//       </button>
-//     </Link>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getUserBySessionId } from "@/lib/publicActions"; // Ajuste o caminho conforme necessário
-import { getSession } from "@/lib/actions"; // Função para obter a sessão
+import { getUserBySessionId } from "@/lib/publicActions";
+import { getSession } from "@/lib/auth";
 
 export default function FollowButton() {
   const [username, setUsername] = useState<string | null>(null);
@@ -30,7 +18,6 @@ export default function FollowButton() {
         if (session && session.id) {
           const userId = Number(session.id);
 
-          // Busca o usuário a partir do ID da sessão
           const user = await getUserBySessionId(userId);
           if (user && user.name) {
             setUsername(user.name);
@@ -66,7 +53,7 @@ export default function FollowButton() {
   return (
     <div className=" flex justify-center">
       <Link href={`/${username}`}>
-        <button className=" text-black lg:text-lg xl:text-xl 2xl:text-2xl">
+        <button className=" font-sans text-black lg:text-md xl:text-lg 2xl:text-xl">
           Tela {username}
         </button>
       </Link>

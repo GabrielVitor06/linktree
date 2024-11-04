@@ -3,7 +3,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSession } from "@/lib/actions";
+import { getSession } from "@/lib/auth";
 import { fetchUserTitles, deleteTitle, editarTitle } from "@/lib/linkActions";
 import { FaRegTrashAlt, FaEdit } from "react-icons/fa";
 import Subcredenciais from "@/app/componentesDashboard/subCredenciais/page";

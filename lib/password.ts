@@ -17,21 +17,8 @@ export async function comparePassword(
   return await bcrypt.compare(plainPassword, hashedPassword);
 }
 
-// function arrayBufferToHex(arrayBuffer: ArrayBuffer) {
-//   return Array.from(new Uint8Array(arrayBuffer))
-//     .map((byte) => byte.toString(16).padStart(2, "0"))
-//     .join("");
-// }
+import crypto from "crypto";
 
-// export function createSalt() {
-//   return arrayBufferToHex(crypto.getRandomValues(new Uint8Array(16)));
-// }
-
-// export async function hashPassword(password: string, salt: string) {
-//   return arrayBufferToHex(
-//     await crypto.subtle.digest(
-//       "SHA-256",
-//       new TextEncoder().encode(`${password}.${salt}`)
-//     )
-//   );
-// }
+export function createSalt(length: number = 16): string {
+  return crypto.randomBytes(length).toString("hex");
+}

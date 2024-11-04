@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { templates, userTemplateChoices } from "@/lib/schema";
-import { getSession } from "@/lib/actions";
+import { getSession } from "@/lib/auth";
 import { eq } from "drizzle-orm"; // Substitua com o local correto do pacote ORM que fornece `eq`
 
 // Função GET para obter todos os templates

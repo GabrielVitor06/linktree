@@ -51,32 +51,44 @@ export default function Menu() {
               <FollowButton />
             </span>
           </li>
+          <li className="ml-2">
+            {" "}
+            <span className="ml-6 hover:text-xl ">
+              <Link href="/componentesDashboard/conta">Configurações</Link>
+            </span>
+          </li>
         </ul>
 
         {/* Response */}
 
         <ul
-          className={` z-50 space-x-12 text-lg xl:text-xl 2xl:text-2xl font-sans hidden sm:block w-full mr-14 bg-transparent xl:max-w-[3500px] `}
+          className={` z-50 space-x-8 text-md xl:text-lg 2xl:text-xl font-sans hidden sm:block w-full mr-14 bg-transparent xl:max-w-[3500px] `}
         >
           <div className=" flex items-center justify-end ">
-            <li className=" ml-2 ">
+            <li className=" ml-4 ">
               {" "}
-              <span className="ml-6 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl">
+              <span className="ml-2 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl">
                 <Link href="/Dashboard">Dashboard</Link>
               </span>
             </li>
-            <li className="ml-2  ">
+            <li className="ml-4  ">
               {" "}
-              <span className="ml-6 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
+              <span className="ml-2 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
                 <Link href="/componentesDashboard/escolherTela">
                   Escolher tela
                 </Link>
               </span>
             </li>
-            <li className="ml-6  ">
+            <li className="ml-4  ">
               {" "}
               <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
                 <FollowButton />
+              </span>
+            </li>
+            <li className="ml-4">
+              {" "}
+              <span className=" hover:text-xl ">
+                <Link href="/componentesDashboard/conta">Configurações</Link>
               </span>
             </li>
           </div>

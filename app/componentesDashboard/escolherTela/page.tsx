@@ -8,7 +8,7 @@ const TemplateSelector: React.FC = () => {
   const [templates, setTemplates] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const userId = "123"; // Substitua pela lógica para obter o ID do usuário autenticado
+  const userId = "123";
 
   useEffect(() => {
     const fetchTemplates = async () => {

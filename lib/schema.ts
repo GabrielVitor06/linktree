@@ -27,7 +27,6 @@ export const titles = sqliteTable("title", {
 export type Title = typeof forms.$inferSelect;
 export type NewTitle = typeof forms.$inferInsert;
 
-// Tabela de templates
 export const templates = sqliteTable("templates", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
@@ -38,7 +37,6 @@ export const templates = sqliteTable("templates", {
 export type Template = typeof templates.$inferSelect;
 export type NewTemplate = typeof templates.$inferInsert;
 
-// Tabela para salvar a escolha do template do usuário
 export const userTemplateChoices = sqliteTable("user_template_choices", {
   id: integer("id").primaryKey(),
   userId: integer("userId").notNull(),
@@ -53,7 +51,21 @@ export const users = sqliteTable("users", {
   name: text("name"),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
+  salt: text("salt", { length: 32 }).notNull(),
+  createdAt: text("created_at").notNull(),
 });
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+
+export const otps = sqliteTable("otps", {
+  id: integer("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  code: text("code").notNull(),
+  expiresAt: integer("expires_at").notNull(),
+});
+
+export type Otp = typeof otps.$inferSelect;
+export type NewOtp = typeof otps.$inferInsert;

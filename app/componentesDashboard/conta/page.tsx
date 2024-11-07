@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getSession } from "@/lib/auth";
+import { getSession, signOut } from "@/lib/auth";
 import { fetchUserData } from "@/lib/actions";
 import Menu from "@/components/navbar";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type User = {
   id: number;
@@ -17,6 +18,7 @@ export default function Conta() {
   const [user, setUser] = useState<User>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -46,6 +48,11 @@ export default function Conta() {
   //   console.log("Formulário enviado para editar dados do usuário:", user);
   // };
   // onSubmit={handleSubmit}
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/login"); // Redireciona para a página de login
+  };
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -99,6 +106,9 @@ export default function Conta() {
               </Link>
             </div>
           </form>
+          <button onClick={handleSignOut} className="mt-4 p-2  rounded">
+            Sair
+          </button>
         </div>
       </div>
     </>

@@ -29,7 +29,7 @@ export default function Conta() {
         try {
           const userData = await fetchUserData(userId);
           setUser(userData);
-        } catch (err: unknown) {
+        } catch {
           setError("Erro ao buscar dados do usuário.");
         }
       } else {

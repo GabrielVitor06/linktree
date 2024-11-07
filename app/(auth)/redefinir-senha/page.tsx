@@ -28,8 +28,12 @@ export default function PasswordResetForm() {
         setStep(2);
         setSuccess("Código de segurança enviado para seu e-mail.");
       }
-    } catch (err: any) {
-      setError(err.message || "Erro ao enviar o código de segurança.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Erro ao enviar o código de segurança.");
+      } else {
+        setError("Erro desconhecido ao enviar o código de segurança.");
+      }
     }
   };
 
@@ -48,8 +52,12 @@ export default function PasswordResetForm() {
       } else {
         setError("Erro interno: ID do usuário não encontrado.");
       }
-    } catch (err: any) {
-      setError(err.message || "Erro ao redefinir a senha.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Erro ao redefinir a senha.");
+      } else {
+        setError("Erro desconhecido ao redefinir a senha.");
+      }
     }
   };
 

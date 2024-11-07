@@ -3,7 +3,6 @@
 import { forms, NewForm, titles } from "@/lib/schema";
 import db from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import { SQLWrapper } from "drizzle-orm";
 
 export async function linktree(formData: FormData) {
   "use server";
@@ -63,7 +62,7 @@ export async function Titles(formData: FormData) {
     [NewTitle] = (await db
       .insert(titles)
       .values({
-        userId: userId, // Define o userId aqui
+        userId: userId,
         title: String(formData.get("title")),
         subtitulo: String(formData.get("subtitulo")),
         imageUrl: String(formData.get("imageUrl")),
@@ -81,7 +80,6 @@ export async function Titles(formData: FormData) {
   return { success: true, data: NewTitle };
 }
 
-// Função que busca os dados do usuário com base no ID
 export const fetchUserData = async (userId: number) => {
   try {
     const user = await db.query.users.findFirst({
@@ -93,7 +91,7 @@ export const fetchUserData = async (userId: number) => {
         password: true,
       },
     });
-    return user || null; // Certifique-se de retornar null se o usuário não for encontrado
+    return user || null;
   } catch (error) {
     console.error("Erro ao buscar dados do usuário:", error);
     throw new Error("Erro ao buscar dados do usuário");

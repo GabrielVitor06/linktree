@@ -10,7 +10,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { UnexpectedError } from "@/lib/error";
 import { sendEmail } from "./email";
 import { eq } from "drizzle-orm";
-import { create } from "domain";
 
 interface Session {
   [x: string]: unknown;

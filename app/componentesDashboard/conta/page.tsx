@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getSession } from "@/lib/auth"; // Ajuste conforme sua implementação de autenticação
+import { getSession } from "@/lib/auth";
 import { fetchUserData } from "@/lib/actions";
 import Menu from "@/components/navbar";
 import Link from "next/link";
 
-// Definindo o tipo User
 type User = {
   id: number;
   name: string | null;
@@ -17,11 +16,11 @@ type User = {
 export default function Conta() {
   const [user, setUser] = useState<User>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Estado de carregamento
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      setLoading(true); // Começa o carregamento
+      setLoading(true);
 
       const session = await getSession();
 
@@ -30,27 +29,27 @@ export default function Conta() {
         try {
           const userData = await fetchUserData(userId);
           setUser(userData);
-        } catch (err: any) {
+        } catch (err: unknown) {
           setError("Erro ao buscar dados do usuário.");
         }
       } else {
         setError("Usuário não autenticado.");
       }
-      setLoading(false); // Finaliza o carregamento
+      setLoading(false);
     };
 
     fetchUserProfile();
   }, []);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Lógica para editar os dados do usuário
-    console.log("Formulário enviado para editar dados do usuário:", user);
-  };
+  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   console.log("Formulário enviado para editar dados do usuário:", user);
+  // };
+  // onSubmit={handleSubmit}
 
-  if (loading) return <p>Carregando...</p>; // Mensagem de carregamento
-  if (error) return <p className="text-red-500">{error}</p>; // Mensagem de erro
-  if (!user) return <p>Nenhum dado do usuário encontrado.</p>; // Caso não encontre o usuário
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!user) return <p>Nenhum dado do usuário encontrado.</p>;
 
   return (
     <>
@@ -59,7 +58,7 @@ export default function Conta() {
       <div className="flex justify-center items-center min-h-screen">
         <div className="max-w-md mx-auto p-4 -mt-32 ">
           <h1 className="text-2xl font-semibold mb-4">Perfil do Usuário</h1>
-          <form onSubmit={handleSubmit} className="mt-10">
+          <form className="mt-10">
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
                 Nome
@@ -88,7 +87,7 @@ export default function Conta() {
               </label>
               <input
                 type="password"
-                value="••••••••" // Exibir como bolinhas
+                value="••••••••"
                 className="mt-1 p-2 border rounded w-full"
                 readOnly
               />

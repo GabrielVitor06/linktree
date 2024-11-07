@@ -7,10 +7,11 @@ export default function Dashboard() {
     <>
       <Menu />
       <br />
-      <br />
-      <br />
-      <MyLinks />
-      <MyTitle />
+
+      <div className="mt-12 sm:mt-44">
+        <MyLinks />
+        <MyTitle />
+      </div>
     </>
   );
 }

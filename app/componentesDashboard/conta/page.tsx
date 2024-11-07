@@ -51,7 +51,7 @@ export default function Conta() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/login"); // Redireciona para a página de login
+    router.push("/"); // Redireciona para a página de login
   };
 
   if (loading) return <p>Carregando...</p>;

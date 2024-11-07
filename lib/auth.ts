@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { UnexpectedError } from "@/lib/error";
 import { sendEmail } from "./email";
 import { eq } from "drizzle-orm";
+import { create } from "domain";
 
 interface Session {
   [x: string]: unknown;
@@ -72,9 +73,9 @@ export async function Signup(formData: FormData) {
   const email = formData.get("email");
   const name = formData.get("name");
   const salt = formData.get("salt");
-  const created_at = formData.get("created_at");
 
   if (password === null || email === null || name === null) {
+    console.log("Campos obrigatórios estão faltando.");
     return { success: false, error: "Required fields are missing." };
   }
 
@@ -82,7 +83,7 @@ export async function Signup(formData: FormData) {
   try {
     hashedPassword = await hashPassword(String(password));
   } catch (hashError) {
-    console.error("Failed to hash password", hashError);
+    console.error("Falha ao criptografar a senha:", hashError);
     return { success: false, error: "Failed to process password." };
   }
 
@@ -99,11 +100,12 @@ export async function Signup(formData: FormData) {
       })
       .returning()) as unknown as [NewUser];
   } catch (dbError) {
-    console.error("Failed to insert user", dbError);
+    console.error("Falha ao inserir usuário:", dbError);
     return { success: false, error: "Failed to register user." };
   }
 
   if (!NewUser) {
+    console.log("Falha ao registrar o novo usuário.");
     return { success: false, error: "User registration failed." };
   }
 
@@ -117,8 +119,9 @@ export async function Signup(formData: FormData) {
       },
       sessionLifetimeInS
     );
+    console.log("JWT criado com sucesso:", jwt);
   } catch (jwtError) {
-    console.error("Failed to create JWT", jwtError);
+    console.error("Falha ao criar JWT:", jwtError);
     return { success: false, error: "Failed to create session." };
   }
 
@@ -130,12 +133,13 @@ export async function Signup(formData: FormData) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
+    console.log("Cookie de sessão configurado com sucesso.");
   } catch (cookieError) {
-    console.error("Failed to set cookie", cookieError);
+    console.error("Falha ao configurar cookie:", cookieError);
     return { success: false, error: "Failed to create session." };
   }
 
-  return { sucess: true, error: null };
+  return { success: true, error: null };
 }
 
 export async function SignIn(email: string, password: string) {
@@ -210,13 +214,13 @@ export async function resetPassword(email: string) {
   }
 
   const code = String(Math.floor(100000 + Math.random() * 900000));
-  const expiresAt = Math.floor(Date.now() / 1000) + 15 * 60; // Em segundos (timestamp)
 
   try {
     await db.insert(otps).values({
       userId: user.id,
       code,
-      expiresAt,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+      createdAt: new Date(),
     });
   } catch (error) {
     throw new UnexpectedError(
@@ -255,7 +259,7 @@ export async function confirmPasswordReset(
   } catch {}
 
   if (!userId) {
-    // Atraso aleatório para prevenir divulgação de existência do usuário
+    // A random delay prevents the disclosure of a user's existence
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
 
     throw new Error("O código de segurança fornecido é inválido ou expirou");
@@ -273,7 +277,6 @@ export async function confirmPasswordReset(
       newPassword: z.string().min(8),
     })
   );
-
   let otp;
   try {
     otp = await db.query.otps.findFirst({
@@ -288,7 +291,8 @@ export async function confirmPasswordReset(
     );
   }
 
-  if (!otp || otp.expiresAt <= Math.floor(Date.now() / 1000)) {
+  if (!otp || new Date(otp.expiresAt) <= new Date()) {
+    console.log("OTP expirado ou inválido");
     throw new Error("O código de segurança fornecido é inválido ou expirou");
   }
 

@@ -56,46 +56,51 @@ export default function Conta() {
     <>
       <Menu />
       <br />
-      <div className="max-w-md mx-auto p-4 mt-6">
-        <h1 className="text-2xl font-semibold mb-4">Perfil do Usuário</h1>
-        <form onSubmit={handleSubmit} className="mt-10">
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Nome
-            </label>
-            <input
-              type="text"
-              value={user.name || ""}
-              className="mt-1 p-2 border rounded w-full"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              value={user.email}
-              className="mt-1 p-2 border rounded w-full"
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Senha
-            </label>
-            <input
-              type="password"
-              value="••••••••" // Exibir como bolinhas
-              className="mt-1 p-2 border rounded w-full"
-              readOnly
-            />
-            <Link className="text-blue-600 underline" href={"/redefinir-senha"}>
-              Redefinir senha
-            </Link>
-          </div>
-        </form>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="max-w-md mx-auto p-4 -mt-32 ">
+          <h1 className="text-2xl font-semibold mb-4">Perfil do Usuário</h1>
+          <form onSubmit={handleSubmit} className="mt-10">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Nome
+              </label>
+              <input
+                type="text"
+                value={user.name || ""}
+                className="mt-1 p-2 border rounded w-full"
+                readOnly
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                type="email"
+                value={user.email}
+                className="mt-1 p-2 border rounded w-full"
+                readOnly
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Senha
+              </label>
+              <input
+                type="password"
+                value="••••••••" // Exibir como bolinhas
+                className="mt-1 p-2 border rounded w-full"
+                readOnly
+              />
+              <Link
+                className="text-blue-600 underline"
+                href={"/redefinir-senha"}
+              >
+                Redefinir senha
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

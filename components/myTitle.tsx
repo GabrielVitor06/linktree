@@ -315,8 +315,8 @@ export default function MyTitle() {
                   <FaRegTrashAlt />
                 </button>
               </div>
-              <div className="flex items-center p-4 border rounded-lg shadow">
-                <h1>{title.imageUrl}</h1>
+              <div className="flex items-center p-4 border rounded-lg shadow ">
+                <h1 className="break-all">{title.imageUrl}</h1>
                 <div className="flex-grow"></div>
                 <button
                   onClick={() => handleEditURLClick(title)}

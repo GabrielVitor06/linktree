@@ -66,7 +66,7 @@ const TemplateSelector: React.FC = () => {
             Escolha um Template
           </h1>
           {error && <p className="text-red-500">{error}</p>}
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-12">
             {templates.map((template) => (
               <li key={template.id} className="flex flex-col items-center">
                 <button

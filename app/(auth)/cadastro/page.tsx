@@ -17,7 +17,7 @@ export default function Cadastro() {
     const result = await Signup(formData);
 
     if (result.success) {
-      router.push("/componentesDashboard/escolherTela");
+      router.push("/");
     } else {
       setError(result.error || "Erro desconhecido.");
     }
@@ -25,10 +25,10 @@ export default function Cadastro() {
 
   return (
     <>
-      <section className="flex justify-center items-center m-4 mt-6 p-2">
+      <section className="flex justify-center items-center p-2 mt-24">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-md rounded w-full max-w-2xl p-4"
+          className="bg-white shadow-md rounded w-full max-w-2xl p-6"
         >
           <h2 className="text-2xl font-bold mb-4 text-center">Cadastro</h2>
           {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
@@ -81,7 +81,7 @@ export default function Cadastro() {
             />
           </div>
           <div className="flex items-center justify-between mt-8">
-            <Link href="/login" className="text-blue-500 hover:underline">
+            <Link href="/" className="text-blue-500 hover:underline">
               Já possui uma conta?
             </Link>
             <button

@@ -85,7 +85,7 @@ export default function ProfessionalTemplate() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex justify-center items-center">
       {error && <p className="text-red-500">{error}</p>}
-      <div className="font-sans text-white flex flex-col justify-center p-6 rounded-2xl">
+      <div className="font-sans text-white flex flex-col justify-center rounded-2xl">
         <div>
           {imageUrl && (
             <div className="flex justify-center">

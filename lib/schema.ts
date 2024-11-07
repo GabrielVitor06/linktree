@@ -1,4 +1,4 @@
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, integer, text, int } from "drizzle-orm/sqlite-core";
 
 export const forms = sqliteTable("form", {
   id: integer("id").primaryKey(),
@@ -64,7 +64,8 @@ export const otps = sqliteTable("otps", {
     .notNull()
     .references(() => users.id),
   code: text("code").notNull(),
-  expiresAt: integer("expires_at").notNull(),
+  expiresAt: int({ mode: "timestamp" }).notNull(),
+  createdAt: int({ mode: "timestamp" }).notNull(),
 });
 
 export type Otp = typeof otps.$inferSelect;

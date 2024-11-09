@@ -6,7 +6,6 @@ import { hashPassword, createSalt, comparePassword } from "@/lib/password";
 import { cookies } from "next/headers";
 import { createJWT, verifyJWT } from "@/lib/JWT";
 import { z, ensureValidData } from "@/lib/data";
-import { NextRequest, NextResponse } from "next/server";
 import { UnexpectedError } from "@/lib/error";
 import { sendEmail } from "./email";
 import { eq } from "drizzle-orm";

@@ -67,7 +67,7 @@ export default function PasswordResetForm() {
         <Return />
       </div>
       <div className="flex justify-center p-6 mt-36">
-        <div className="w-full max-w-xl mx-auto p-6 border border-gray-300 rounded">
+        <div className=" mx-auto bg-white shadow-md rounded w-full max-w-2xl p-4">
           <h2 className="text-xl font-bold mb-4">
             {step === 1 ? "Redefinir Senha" : "Confirme a Redefinição"}
           </h2>

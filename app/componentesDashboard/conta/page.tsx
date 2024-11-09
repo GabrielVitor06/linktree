@@ -63,7 +63,7 @@ export default function Conta() {
       <Menu />
       <br />
       <div className="flex justify-center items-center min-h-screen">
-        <div className="max-w-md mx-auto p-4 -mt-32 ">
+        <div className="max-w-md mx-auto p-4 -mt-20 ">
           <h1 className="text-2xl font-semibold mb-4">Perfil do Usuário</h1>
           <form className="mt-10">
             <div className="mb-4">
@@ -106,9 +106,14 @@ export default function Conta() {
               </Link>
             </div>
           </form>
-          <button onClick={handleSignOut} className="mt-4 p-2  rounded">
-            Sair
-          </button>
+          <div className="flex justify-end">
+            <button
+              onClick={handleSignOut}
+              className="mt-4 pl-4 pr-5 pt-1 pb-1 bg-red-600 text-white  rounded"
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </div>
     </>

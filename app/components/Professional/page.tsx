@@ -4,7 +4,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchUserLinks, fetchUserTitles } from "@/lib/linkActions";
-import Image from "next/image";
 import {
   FaTwitter,
   FaLinkedin,

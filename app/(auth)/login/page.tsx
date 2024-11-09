@@ -41,7 +41,7 @@ export default function Login() {
 
   return (
     <>
-      <section className="flex justify-center items-center m-4 p-2">
+      <section className="flex justify-center items-center m-2">
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-md rounded w-full max-w-2xl p-4"

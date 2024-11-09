@@ -53,7 +53,7 @@ export default function FollowButton() {
   return (
     <div className=" flex justify-center">
       <Link href={`/${username}`}>
-        <button className=" font-sans text-black lg:text-md xl:text-lg 2xl:text-xl">
+        <button className=" font-sans text-green-500 lg:text-md xl:text-lg 2xl:text-xl">
           Tela {username}
         </button>
       </Link>

@@ -16,7 +16,7 @@ export default function Menu() {
 
   return (
     <>
-      <nav className="bg-white h-12 lg:h-16 xl:h-24 w-full text-gray-800 m-0 p-0 flex items-center fixed z-40 lg:bg-transparent xl:justify-center">
+      <nav className="bg-gray-100 h-12 lg:h-16 w-full text-gray-800 m-0 p-0 flex items-center fixed z-40  xl:justify-center">
         <h1 className="ml-4 font-bold text-sm  lg:text-xl xl:text-2xl 2xl:text-3xl lg:w-96">
           Linktree
         </h1>
@@ -37,14 +37,7 @@ export default function Menu() {
               <Link href="/Dashboard">Dashboard</Link>
             </span>
           </li>
-          <li className="ml-2">
-            {" "}
-            <span className="ml-6 hover:text-xl ">
-              <Link href="/componentesDashboard/escolherTela">
-                Escolher tela
-              </Link>
-            </span>
-          </li>
+
           <li className="-ml-9  ">
             {" "}
             <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
@@ -62,21 +55,13 @@ export default function Menu() {
         {/* Response */}
 
         <ul
-          className={` z-50 space-x-8 text-md xl:text-lg 2xl:text-xl font-sans hidden sm:block w-full mr-14 bg-transparent xl:max-w-[3500px] `}
+          className={`  z-50 space-x-8 text-md xl:text-lg 2xl:text-xl font-sans hidden sm:block w-full mr-14 bg-transparent xl:max-w-[3500px] `}
         >
           <div className=" flex items-center justify-end ">
             <li className=" ml-4 ">
               {" "}
               <span className="ml-2 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl">
                 <Link href="/Dashboard">Dashboard</Link>
-              </span>
-            </li>
-            <li className="ml-4  ">
-              {" "}
-              <span className="ml-2 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
-                <Link href="/componentesDashboard/escolherTela">
-                  Escolher tela
-                </Link>
               </span>
             </li>
             <li className="ml-4  ">

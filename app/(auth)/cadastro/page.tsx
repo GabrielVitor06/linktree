@@ -28,7 +28,7 @@ export default function Cadastro() {
       <section className="flex justify-center items-center p-2 mt-24">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-md rounded w-full max-w-2xl p-6"
+          className="bg-white shadow-md rounded w-full max-w-2xl p-4"
         >
           <h2 className="text-2xl font-bold mb-4 text-center">Cadastro</h2>
           {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}

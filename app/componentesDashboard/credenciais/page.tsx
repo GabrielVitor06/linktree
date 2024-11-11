@@ -9,6 +9,7 @@ import {
   FaWhatsapp,
   FaFacebook,
   FaInstagram,
+  FaGithub,
 } from "react-icons/fa";
 
 export default function LinkTree() {
@@ -96,6 +97,10 @@ export default function LinkTree() {
             {
               name: "Instagram",
               icon: <FaInstagram className="text-pink-500" />,
+            },
+            {
+              name: "GitHub",
+              icon: <FaGithub className="text-black" />,
             },
           ].map((platform) => (
             <label key={platform.name} className="flex items-center">

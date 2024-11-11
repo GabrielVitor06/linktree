@@ -14,6 +14,7 @@ import {
   FaInstagram,
   FaRegTrashAlt,
   FaEdit,
+  FaGithub,
 } from "react-icons/fa";
 import Link from "next/link";
 
@@ -60,6 +61,8 @@ export default function MyLinks() {
         return <FaFacebook />;
       case "Instagram":
         return <FaInstagram />;
+      case "GitHub":
+        return <FaGithub />;
       default:
         return null;
     }
@@ -125,7 +128,7 @@ export default function MyLinks() {
       >
         <div
           className={`${
-            isExpanded ? "h-screen w-screen p-4 sm:pl-44 sm:pr-44 sm:pt-12" : ""
+            isExpanded ? "h-screen w-screen p-4 sm:pl-44 sm:pr-44 sm:pt-16" : ""
           }`}
         >
           <button
@@ -190,6 +193,10 @@ export default function MyLinks() {
                   {
                     name: "Instagram",
                     icon: <FaInstagram className="text-pink-500" />,
+                  },
+                  {
+                    name: "GitHub",
+                    icon: <FaGithub className="text-black" />,
                   },
                 ].map((platform) => (
                   <label key={platform.name} className="flex items-center">

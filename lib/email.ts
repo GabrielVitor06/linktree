@@ -1,7 +1,7 @@
 import { convert } from "html-to-text";
 import { Resend } from "resend";
 
-const resend = new Resend("re_ZkUrBD6n_CfkDUke5rBcM7Ew7TwQzFBMS");
+const resend = new Resend("RESEND_API_KEY");
 
 export function sendEmail(to: string, subject: string, html: string) {
   if (process.env.NODE_ENV === "development") {

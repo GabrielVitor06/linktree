@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getUserBySessionId } from "@/lib/publicActions";
 import { getSession } from "@/lib/auth";
+import { FaTabletScreenButton } from "react-icons/fa6";
 
 export default function FollowButton() {
   const [username, setUsername] = useState<string | null>(null);
@@ -53,8 +54,9 @@ export default function FollowButton() {
   return (
     <div className=" flex justify-center">
       <Link href={`/${username}`}>
-        <button className=" font-sans text-green-500 lg:text-md xl:text-lg 2xl:text-xl">
-          Tela {username}
+        <button className="flex items-center space-x-2 underline font-sans text-green-500 lg:text-md xl:text-lg 2xl:text-xl">
+          <FaTabletScreenButton className="text-black" />
+          <span>Sua tela</span>
         </button>
       </Link>
     </div>

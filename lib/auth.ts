@@ -46,26 +46,6 @@ export async function getSession() {
   }
 }
 
-// export async function renewSession(req: NextRequest, res: NextResponse) {
-//   const session = req.cookies.get("session")?.value;
-
-//   if (!session) {
-//     return;
-//   }
-
-//   try {
-//     res.cookies.set({
-//       name: "session",
-//       value: await createJWT(await verifyJWT(session), sessionLifetimeInS),
-//       maxAge: sessionLifetimeInS,
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production",
-//     });
-//   } catch {
-//     res.cookies.delete("session");
-//   }
-// }
-
 export async function renewSession() {
   const sessionCookie = (await cookies()).get("session")?.value;
 
@@ -91,90 +71,6 @@ export async function renewSession() {
     (await cookies()).delete("session");
   }
 }
-
-// function generateSalt() {
-//   return randomBytes(16).toString('hex');  // Gerando um salt seguro
-// }
-
-// export async function signUp(newUser: Omit<NewUser, "salt">) {
-
-//   ensureValidData(
-//     newUser,
-//     z.object({
-//       name: z.string(),
-//       email: z.string(),
-//       password: z.string().min(8),
-//       createdAt: z.string(),
-//       salt: z.string(),
-//     })
-//   );
-
-//   let salt = generateSalt();
-//   let hashedPassword;
-//   try {
-//     hashedPassword = await hashPassword(newUser.password, salt);
-//   } catch (error) {
-//     throw new UnexpectedError(
-//       "Não foi possível criptografar sua senha. Tente novamente.",
-//       { cause: error }
-//     );
-//   }
-
-//   let newUserId;
-//   try {
-//     newUserId = Number(
-//       (
-//         await db.insert(users).values({
-//           ...newUser,
-//           password: hashedPassword,
-//           salt,
-//         })
-//       ).insertId
-//     );
-//   } catch (error) {
-//     if (
-//       error instanceof DatabaseError &&
-//       error.message.includes("Duplicate entry")
-//     ) {
-//       throw new Error(
-//         "O email fornecido já está cadastrado. Utilize outro email.",
-//         { cause: error }
-//       );
-//     }
-
-//     throw new UnexpectedError(
-//       "Não foi possível criar sua conta devido a uma falha desconhecida. Tente novamente.",
-//       { cause: error }
-//     );
-//   }
-
-//   let jwt;
-//   try {
-//     jwt = await createJWT(
-//       {
-//         user: {
-//           id: newUserId,
-//           name: newUser.name,
-//           email: newUser.email,
-//         },
-//       },
-//       sessionLifetimeInS
-//     );
-//   } catch (error) {
-//     throw new UnexpectedError(
-//       "Sua conta foi criada com sucesso. No entanto, não foi possível iniciar sua sessão automaticamente. Vá para a tela de entrada e faça login manualmente.",
-//       { cause: error }
-//     );
-//   }
-
-//   (await cookies()).set({
-//     name: "session",
-//     value: jwt,
-//     maxAge: sessionLifetimeInS,
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//   });
-// }
 
 export async function Signup(formData: FormData) {
   "use server";
@@ -251,87 +147,6 @@ export async function Signup(formData: FormData) {
 
   return { success: true, error: null };
 }
-
-// export async function signIn(email: string, password: string) {
-//   ensureValidData(
-//     {
-//       email,
-//       password,
-//     },
-//     z.object({
-//       email: z.string(),
-//       password: z.string(),
-//     })
-//   );
-
-//   let user;
-//   try {
-//     user = await db.query.users.findFirst({
-//       columns: {
-//         id: true,
-//         name: true,
-//         email: true,
-//         password: true,
-//         salt: true,
-//       },
-//       where: (users, { eq }) => eq(users.email, email),
-//     });
-//   } catch (error) {
-//     throw new UnexpectedError(
-//       "Não foi possível validar seu email devido a uma falha desconhecida. Tente novamente.",
-//       { cause: error }
-//     );
-//   }
-
-//   if (!user) {
-//     throw new Error(
-//       "O email fornecido não está cadastrado ou a senha é inválida"
-//     );
-//   }
-
-//   let hashedPassword;
-//   try {
-//     hashedPassword = await hashPassword(password, user.salt);
-//   } catch (error) {
-//     throw new UnexpectedError(
-//       "Não foi possível criptografar a senha fornecida. Tente novamente.",
-//       { cause: error }
-//     );
-//   }
-
-//   if (hashedPassword !== user.password) {
-//     throw new Error(
-//       "O email fornecido não está cadastrado ou a senha é inválida"
-//     );
-//   }
-
-//   let jwt;
-//   try {
-//     jwt = await createJWT(
-//       {
-//         user: {
-//           id: user.id,
-//           name: user.name,
-//           email: user.email,
-//         },
-//       },
-//       sessionLifetimeInS
-//     );
-//   } catch (error) {
-//     throw new UnexpectedError(
-//       "Não foi possível iniciar sua sessão. Tente novamente.",
-//       { cause: error }
-//     );
-//   }
-
-//   (await cookies()).set({
-//     name: "session",
-//     value: jwt,
-//     maxAge: sessionLifetimeInS,
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//   });
-// }
 
 export async function SignIn(email: string, password: string) {
   "use server";
@@ -423,9 +238,9 @@ export async function resetPassword(email: string) {
   try {
     await sendEmail(
       email,
-      `${code} é seu código de segurança para redefinir sua senha do NTFit`,
+      `${code} é seu código de segurança para redefinir sua senha do linktree`,
       `<p>Olá,</p>
-        <p>Recebemos uma solicitação para redefinir sua senha do NTFit.</p>
+        <p>Recebemos uma solicitação para redefinir sua senha do linktree.</p>
         <p>Para completar o processo de redefinição, insira o seguinte código de segurança:<br />${code}</p>
         <p>Se você não solicitou a redefinição de senha, ignore este email.</p>`
     );

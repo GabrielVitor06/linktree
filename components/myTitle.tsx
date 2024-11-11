@@ -155,7 +155,7 @@ export default function MyTitle() {
       >
         <div
           className={`${
-            isExpanded ? "h-screen w-screen p-4 sm:pl-44 sm:pr-44 sm:pt-12" : ""
+            isExpanded ? "h-screen w-screen p-4 sm:pl-44 sm:pr-44 sm:pt-16" : ""
           }`}
         >
           <button
@@ -341,7 +341,7 @@ export default function MyTitle() {
           onClick={toggleExpand}
           className=" text-white  bg-blue-500 hover:bg-blue-600 w-full max-w-2xl p-2 rounded-lg lg:text-lg xl:text-xl 2xl:text-2xl  font-bold"
         >
-          Adicionar links
+          Adicionar títulos
         </button>
       </div>
     </>

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchUserLinks, fetchUserTitles } from "@/lib/linkActions";
-import Image from "next/image";
+import { PiLinktreeLogoThin } from "react-icons/pi";
 import {
   FaTwitter,
   FaLinkedin,
@@ -125,8 +125,8 @@ export default function ProfessionalTemplate() {
             ))}
           </div>
 
-          <div className="mt-16 flex justify-center space-x-4 font-sans font-extrabold">
-            Linktree
+          <div className="mt-16 flex justify-center items-center space-x-1 font-sans font-extrabold">
+            <PiLinktreeLogoThin className="text-3xl" /> <span>Linktree</span>
           </div>
         </div>
       </div>

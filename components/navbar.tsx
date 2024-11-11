@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FaXmark, FaBars } from "react-icons/fa6";
+import { FaXmark, FaBars, FaGear } from "react-icons/fa6";
 import React, { useState } from "react";
 import FollowButton from "./buttonLink";
+import { MdOutlineDashboard } from "react-icons/md";
 
 export default function Menu() {
   const [showMenu, setShowMenu] = useState(false);
@@ -33,12 +34,15 @@ export default function Menu() {
         >
           <li className="mt-16 ml-2 ">
             {" "}
-            <span className="ml-6 hover:text-custom-rgb hover:text-xl">
-              <Link href="/Dashboard">Dashboard</Link>
+            <span className="ml-6 hover:text-custom-rgb hover:text-xl space-x-2 flex items-center">
+              <MdOutlineDashboard />
+              <Link href="/Dashboard" className="underline">
+                Dashboard
+              </Link>
             </span>
           </li>
 
-          <li className="-ml-9  ">
+          <li className=" ">
             {" "}
             <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
               <FollowButton />
@@ -46,8 +50,11 @@ export default function Menu() {
           </li>
           <li className="ml-2">
             {" "}
-            <span className="ml-6 hover:text-xl ">
-              <Link href="/componentesDashboard/conta">Configurações</Link>
+            <span className="ml-6 hover:text-xl space-x-2  flex items-center">
+              <FaGear />
+              <Link href="/componentesDashboard/conta" className="underline">
+                Configurações
+              </Link>
             </span>
           </li>
         </ul>
@@ -58,22 +65,28 @@ export default function Menu() {
           className={`  z-50 space-x-8 text-md xl:text-lg 2xl:text-xl font-sans hidden sm:block w-full mr-14 bg-transparent xl:max-w-[3500px] `}
         >
           <div className=" flex items-center justify-end ">
-            <li className=" ml-4 ">
+            <li className=" ml-5 ">
               {" "}
-              <span className="ml-2 hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl">
-                <Link href="/Dashboard">Dashboard</Link>
+              <span className="ml-6 hover:text-custom-rgb hover:text-xl space-x-2 flex items-center">
+                <MdOutlineDashboard />
+                <Link href="/Dashboard" className="underline">
+                  Dashboard
+                </Link>
               </span>
             </li>
-            <li className="ml-4  ">
+            <li className="ml-5  ">
               {" "}
               <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
                 <FollowButton />
               </span>
             </li>
-            <li className="ml-4">
+            <li className="ml-5">
               {" "}
-              <span className=" hover:text-xl ">
-                <Link href="/componentesDashboard/conta">Configurações</Link>
+              <span className=" hover:text-xl space-x-2  flex items-center">
+                <FaGear />
+                <Link href="/componentesDashboard/conta" className="underline">
+                  Configurações
+                </Link>
               </span>
             </li>
           </div>

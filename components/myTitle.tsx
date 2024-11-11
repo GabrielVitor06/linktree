@@ -171,7 +171,7 @@ export default function MyTitle() {
       {isEditingTitle && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Editar Título</h2>
+            <h2 className="text-xl font-bold mb-4">Editar Títul</h2>
             <form onSubmit={handleEditTitle}>
               <label className="block mb-2">
                 Título:

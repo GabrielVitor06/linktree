@@ -80,7 +80,7 @@ export default function PasswordResetForm() {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  E-mail
+                  E-mails
                 </label>
                 <input
                   type="email"

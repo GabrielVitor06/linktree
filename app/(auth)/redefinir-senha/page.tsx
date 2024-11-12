@@ -15,12 +15,39 @@ export default function PasswordResetForm() {
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
+  // const handleRequestCode = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError("");
+  //   setSuccess("");
+
+  //   try {
+  //     const obfuscatedUserId = await resetPassword(email);
+
+  //     if (obfuscatedUserId) {
+  //       setUserId(obfuscatedUserId);
+  //       setStep(2);
+  //       setSuccess("Código de segurança enviado para seu e-mail.");
+  //     }
+  //   } catch (err: unknown) {
+  //     if (err instanceof Error) {
+  //       setError(err.message || "Erro ao enviar o código de segurança.");
+  //     } else {
+  //       setError("Erro desconhecido ao enviar o código de segurança.");
+  //     }
+  //   }
+  // };
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
     try {
+      // Validação de email (opcional)
+      if (!validateEmail(email)) {
+        setError("Por favor, insira um e-mail válido.");
+        return;
+      }
+
       const obfuscatedUserId = await resetPassword(email);
 
       if (obfuscatedUserId) {
@@ -35,6 +62,11 @@ export default function PasswordResetForm() {
         setError("Erro desconhecido ao enviar o código de segurança.");
       }
     }
+  };
+
+  // Função opcional para validação do email
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {

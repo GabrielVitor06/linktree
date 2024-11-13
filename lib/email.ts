@@ -9,7 +9,7 @@ export function sendEmail(to: string, subject: string, html: string) {
   }
 
   return resend.emails.send({
-    from: "Acme <onboarding@resend.dev>",
+    from: "Linktree <no-reply@gabrielvitor.dev.com>",
     to,
     subject,
     text: convert(html),

@@ -9,7 +9,7 @@ export function sendEmail(to: string, subject: string, html: string) {
   }
 
   return resend.emails.send({
-    from: "<no-reply@gabrielvitor.dev.com>",
+    from: "<no-reply@gabrielvitor.dev",
     to,
     subject,
     text: convert(html),

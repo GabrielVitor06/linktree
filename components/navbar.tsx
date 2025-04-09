@@ -42,7 +42,7 @@ export default function Menu() {
             </span>
           </li>
 
-          <li className=" ">
+          <li>
             {" "}
             <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
               <FollowButton />

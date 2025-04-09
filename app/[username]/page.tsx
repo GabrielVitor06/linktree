@@ -1,20 +1,17 @@
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import {
   getUserIdByUsername,
   getUserTemplateChoice,
   getTemplateById,
 } from "@/lib/publicActions";
-import React, { Suspense } from "react";
 
 interface PublicPageProps {
-  params: Promise<{ username: string }>;
+  params: { username: string };
 }
 
-const loadTemplate = (filePath: string) =>
-  React.lazy(() => import(`@/app/components/${filePath}/page`));
-
-export default async function PublicPage({ params }: PublicPageProps) {
-  const { username } = await params;
+export default async function PublicPage(props: PublicPageProps) {
+  const { username } = await props.params;
 
   const userId = await getUserIdByUsername(username);
   if (!userId) return notFound();
@@ -25,13 +22,13 @@ export default async function PublicPage({ params }: PublicPageProps) {
   const template = await getTemplateById(userTemplateChoice.templateId);
   if (!template) return notFound();
 
-  const TemplateComponent = loadTemplate(template.filePath);
+  const TemplateComponent = dynamic(
+    () => import(`@/app/components/${template.filePath}/page`)
+  );
 
   return (
     <div>
-      <Suspense fallback={<p>Loading template...</p>}>
-        <TemplateComponent />
-      </Suspense>
+      <TemplateComponent />
     </div>
   );
 }

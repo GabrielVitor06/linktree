@@ -1,100 +1,127 @@
 "use client";
 
-import { useState } from "react";
-import { Titles } from "@/lib/actions";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Stack,
+  TextField,
+  FormControl,
+  Alert,
+  Paper,
+  Typography,
+} from "@mui/material";
+
+import { useApp } from "@/hook/useApp";
 
 export default function Subcredenciais() {
+  const { getTitles, createTitle, updateTitle, loadingMap, errorMap, userId } =
+    useApp();
+
+  const [title, setTitle] = useState("");
+  const [subtitulo, setSubtitulo] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentTitleId, setCurrentTitleId] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchTitles = async () => {
+      if (!userId) return;
+
+      const userTitles = await getTitles();
+      if (userTitles && userTitles.length > 0) {
+        const t = userTitles[0];
+        setIsEditMode(true);
+        setCurrentTitleId(t.id);
+        setTitle(t.title || "");
+        setSubtitulo(t.subtitulo || "");
+        setImageUrl(t.imageUrl || "");
+      }
+    };
+
+    fetchTitles();
+  }, [userId]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setMessage(null);
+    setError(null);
 
-    const formData = new FormData(event.currentTarget);
+    try {
+      if (isEditMode && currentTitleId) {
+        const result = await updateTitle(currentTitleId, { title, subtitulo });
 
-    const result = await Titles(formData);
-    console.log(result);
+        if (result) {
+          setMessage("Título editado com sucesso!");
+        } else {
+          setError("Erro ao editar título.");
+        }
+      } else {
+        const formData = new FormData(event.currentTarget);
+        formData.set("imageUrl", imageUrl); // Garantir envio da imagem
+        const result = await createTitle(formData);
 
-    if (result.success) {
-      setMessage("Link enviado com sucesso!");
-      setError(null);
-      window.location.reload();
-    } else {
-      setError(result.error || "Ocorreu um erro. Tente novamente.");
-      setMessage(null);
+        if (result) {
+          setMessage("Título enviado com sucesso!");
+        } else {
+          setError("Erro ao enviar título.");
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao processar ação:", err);
+      setError("Erro inesperado ao processar.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="text-lg lg:text-xl xl:text-2xl font-bold mb-8 text-gray-800">
-        TÍTULOS
-      </h1>
-
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded w-full"
-      >
-        <div className="mb-2">
-          <label
-            htmlFor="title"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Título
-          </label>
-          <input
-            type="text"
+    <Paper sx={{ p: 3 }}>
+      <Typography variant="h6">Títulos</Typography>
+      <Stack component="form" width={400} spacing={4} onSubmit={handleSubmit}>
+        <FormControl fullWidth>
+          <TextField
             name="title"
-            id="title"
+            label="Título"
             placeholder="Digite seu título"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            variant="standard"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-        </div>
-        <div className="mb-2">
-          <label
-            htmlFor="subtitulo"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Subtítulo
-          </label>
-          <input
-            type="text"
+          <TextField
             name="subtitulo"
-            id="subtitulo"
+            label="Subtítulo"
             placeholder="Digite seu subtítulo"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            variant="standard"
+            sx={{ mt: 2 }}
+            value={subtitulo}
+            onChange={(e) => setSubtitulo(e.target.value)}
           />
-        </div>
-        <div className="mb-2">
-          <label
-            htmlFor="imageUrl"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            URL de imagem
-          </label>
-          <input
-            type="url"
+          <TextField
             name="imageUrl"
-            id="imageUrl"
-            placeholder="Digite sua url de imagem"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            label="Imagem URL"
+            placeholder="Digite a URL da imagem"
+            variant="standard"
+            sx={{ mt: 2 }}
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
           />
-        </div>
+        </FormControl>
 
-        <button
+        <Button
+          variant="contained"
+          fullWidth
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors mt-8"
+          disabled={loadingMap.createTitle || loadingMap.updateTitle}
         >
-          Enviar
-        </button>
-      </form>
+          {isEditMode ? "Atualizar" : "Enviar"}
+        </Button>
 
-      {message && (
-        <p className="mt-4 text-lg font-semibold text-green-500">{message}</p>
-      )}
-      {error && (
-        <p className="mt-4 text-lg font-semibold text-red-500">{error}</p>
-      )}
-    </div>
+        {message && <Alert severity="success">{message}</Alert>}
+        {error && <Alert severity="error">{error}</Alert>}
+        {errorMap.getTitles && (
+          <Alert severity="error">{errorMap.getTitles}</Alert>
+        )}
+      </Stack>
+    </Paper>
   );
 }

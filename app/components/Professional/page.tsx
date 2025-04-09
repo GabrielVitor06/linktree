@@ -1,134 +1,134 @@
 /* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { fetchUserLinks, fetchUserTitles } from "@/lib/linkActions";
-import {
-  FaTwitter,
-  FaLinkedin,
-  FaWhatsapp,
-  FaFacebook,
-  FaInstagram,
-} from "react-icons/fa";
-import { getUserIdByUsernames } from "@/lib/publicActions";
+
 import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useApp } from "@/hook/useApp";
+import { Stack, Typography, Avatar, Button } from "@mui/material";
+import { purple } from "@mui/material/colors";
+import {
+  Twitter,
+  LinkedIn,
+  WhatsApp,
+  Facebook,
+  Instagram,
+} from "@mui/icons-material";
+
+interface UserLink {
+  id: string;
+  url: string;
+  text: string;
+  platforms: string;
+}
 
 export default function ProfessionalTemplate() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [links, setLinks] = useState<any[]>([]);
-  const [userTitle, setUserTitle] = useState<string | null>(null);
-  const [userSubTitle, setSubtitle] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const { username } = useParams();
+  const { getUserId, getUserLinks, getTitles } = useApp();
+
+  const [links, setLinks] = useState<UserLink[]>([]);
+  const [userTitle, setUserTitle] = useState<string | null>(null);
+  const [userSubTitle, setUserSubTitle] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchLinks = async () => {
-      try {
-        if (typeof username === "string") {
-          const userId = await getUserIdByUsernames(username);
+    const fetchUserData = async (username: string) => {
+      const userId = await getUserId(username);
 
-          if (userId === null) {
-            setError("Usuário não encontrado.");
-            return;
-          }
+      if (!userId) {
+        console.error("User ID is null");
+        return;
+      }
 
-          const fetchedLinks = await fetchUserLinks(userId);
-          const fetchedTitles = await fetchUserTitles(userId);
+      const [userLinks, titles] = await Promise.all([
+        getUserLinks(userId),
+        getTitles(),
+      ]);
 
-          if (fetchedTitles && fetchedTitles[0]) {
-            setUserTitle(fetchedTitles[0].title);
-            setSubtitle(fetchedTitles[0].subtitulo);
-            setImageUrl(fetchedTitles[0].imageUrl);
-          } else {
-            setError("Título ou subtítulo não encontrados.");
-          }
+      const formattedLinks =
+        userLinks?.map((link) => ({
+          ...link,
+          id: link.id.toString(),
+        })) || [];
 
-          setLinks(fetchedLinks);
-        }
-      } catch (error) {
-        setError("Erro ao carregar os dados.");
-      } finally {
-        setLoading(false);
+      setLinks(formattedLinks);
+
+      if (titles && titles[0]) {
+        const { title, subtitulo, imageUrl } = titles[0];
+        setUserTitle(title);
+        setUserSubTitle(subtitulo);
+        setImageUrl(imageUrl);
       }
     };
 
-    if (username) {
-      fetchLinks();
+    if (typeof username === "string") {
+      fetchUserData(username);
     }
-  }, [username]);
+  }, [username, getUserId, getUserLinks, getTitles]);
 
   const getIcon = (platform: string) => {
-    switch (platform) {
-      case "Twitter":
-        return <FaTwitter />;
-      case "LinkedIn":
-        return <FaLinkedin />;
-      case "WhatsApp":
-        return <FaWhatsapp />;
-      case "Facebook":
-        return <FaFacebook />;
-      case "Instagram":
-        return <FaInstagram />;
-      default:
-        return null;
-    }
+    const icons: Record<string, JSX.Element> = {
+      Twitter: <Twitter />,
+      LinkedIn: <LinkedIn />,
+      WhatsApp: <WhatsApp />,
+      Facebook: <Facebook />,
+      Instagram: <Instagram />,
+    };
+    return icons[platform] || null;
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex justify-center items-center">
-      {error && <p className="text-red-500">{error}</p>}
-      <div className="font-sans text-white flex flex-col justify-center rounded-2xl">
-        <div>
-          {imageUrl && (
-            <div className="flex justify-center">
-              <img
-                className="w-24 h-24 lg:w-28 lg:h-28 xl:w-28 xl:h-32 rounded-full border border-zinc-900"
-                src={imageUrl}
-                alt="Profile Avatar"
-                width={150}
-                height={150}
-              />
-            </div>
-          )}
+    <Stack
+      spacing={4}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+      sx={{
+        background: "linear-gradient(to bottom right, #0d0d0d, #1c1c1c)",
+      }}
+    >
+      <Avatar
+        src={imageUrl || ""}
+        alt="Profile Avatar"
+        sx={{
+          width: { xs: 104, lg: 124, xl: 132 },
+          height: { xs: 104, lg: 124, xl: 132 },
+          bgcolor: purple[500],
+          border: "1px solid purple",
+          boxShadow: 2,
+        }}
+      />
 
-          <div className="flex flex-col items-center">
-            <h1 className="mt-8 text-lg lg:text-xl xl:text-2xl font-semibold">
-              {userTitle}
-            </h1>
-            <h1 className="text-md lg:text-lg xl:text-xl">{userSubTitle}</h1>
-          </div>
+      <Stack textAlign="center">
+        <Typography variant="h5" color="white" fontWeight={600}>
+          {userTitle}
+        </Typography>
+        <Typography variant="subtitle1" color="grey.400">
+          {userSubTitle}
+        </Typography>
+      </Stack>
 
-          <div className="mt-6">
-            {links.map((link) => (
-              <div
-                key={link.id}
-                className="mt-4 text-white text-md sm:text-lg md:text-xl lg:text-2xl"
-              >
-                <div className="flex items-center shadow-lg border border-zinc-950 bg-zinc-800 p-1.5 pl-9 pr-9 rounded-2xl">
-                  {getIcon(link.platforms)}
-                  <Link
-                    href={link.url}
-                    className="ml-2 text-blue-500 hover:underline"
-                  >
-                    {link.text}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+      <Stack spacing={3} width="80%" maxWidth={400}>
+        {links.map((link) => (
+          <Button
+            key={link.id}
+            href={link.url}
+            startIcon={getIcon(link.platforms)}
+            variant="contained"
+            color="secondary"
+            sx={{
+              textTransform: "capitalize",
+              fontWeight: 500,
+            }}
+          >
+            {link.text}
+          </Button>
+        ))}
+      </Stack>
 
-          <div className="mt-16 flex justify-center space-x-4 font-sans font-extrabold">
-            Linktree
-          </div>
-        </div>
-      </div>
-    </div>
+      <Typography variant="h6" color="white">
+        Linktree
+      </Typography>
+    </Stack>
   );
 }

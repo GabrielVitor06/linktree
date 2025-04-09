@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { createJWT, verifyJWT } from "@/lib/JWT";
 import { z, ensureValidData } from "@/lib/data";
 import { UnexpectedError } from "@/lib/error";
-import { sendEmail } from "./email";
+// import { sendEmail } from "./email";
 import { eq } from "drizzle-orm";
 // import { DatabaseError } from "@planetscale/database";
 // import { randomBytes } from 'crypto';
@@ -235,21 +235,21 @@ export async function resetPassword(email: string) {
     );
   }
 
-  try {
-    await sendEmail(
-      email,
-      `${code} é seu código de segurança para redefinir sua senha do linktree`,
-      `<p>Olá,</p>
-        <p>Recebemos uma solicitação para redefinir sua senha do linktree.</p>
-        <p>Para completar o processo de redefinição, insira o seguinte código de segurança:<br />${code}</p>
-        <p>Se você não solicitou a redefinição de senha, ignore este email.</p>`
-    );
-  } catch (error) {
-    throw new UnexpectedError(
-      "Não foi possível enviar o email com seu código de segurança. Tente novamente.",
-      { cause: error }
-    );
-  }
+  // try {
+  //   await sendEmail(
+  //     email,
+  //     `${code} é seu código de segurança para redefinir sua senha do linktree`,
+  //     `<p>Olá,</p>
+  //       <p>Recebemos uma solicitação para redefinir sua senha do linktree.</p>
+  //       <p>Para completar o processo de redefinição, insira o seguinte código de segurança:<br />${code}</p>
+  //       <p>Se você não solicitou a redefinição de senha, ignore este email.</p>`
+  //   );
+  // } catch (error) {
+  //   throw new UnexpectedError(
+  //     "Não foi possível enviar o email com seu código de segurança. Tente novamente.",
+  //     { cause: error }
+  //   );
+  // }
 
   return btoa(String(user.id));
 }

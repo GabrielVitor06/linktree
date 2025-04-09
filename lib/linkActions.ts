@@ -65,8 +65,11 @@ export const editarTitle = async (
 ) => {
   try {
     await db.update(titles).set(updatedValues).where(eq(titles.id, titleId));
+    // Retorna um objeto indicando sucesso
+    return { success: true };
   } catch (error) {
     console.error("Erro ao editar o título:", error);
-    throw new Error("Não foi possível editar o título.");
+    // Retorna um objeto com erro caso algo aconteça
+    return { success: false, error: "Não foi possível editar o título." };
   }
 };

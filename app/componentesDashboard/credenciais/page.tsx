@@ -1,143 +1,243 @@
 "use client";
 
-import { useState } from "react";
-import { linktree } from "@/lib/actions";
-
+import React, { useState, useEffect } from "react";
 import {
-  FaTwitter,
-  FaLinkedin,
-  FaWhatsapp,
-  FaFacebook,
-  FaInstagram,
-  FaGithub,
-} from "react-icons/fa";
+  Button,
+  Stack,
+  TextField,
+  FormControl,
+  Alert,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Paper,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import {
+  Twitter,
+  LinkedIn,
+  WhatsApp,
+  Facebook,
+  Instagram,
+  GitHub,
+  Edit,
+  Delete,
+  Save,
+  Cancel,
+} from "@mui/icons-material";
+import { useApp } from "@/hook/useApp";
+
+const platforms = [
+  { name: "Twitter", icon: <Twitter color="primary" /> },
+  { name: "LinkedIn", icon: <LinkedIn sx={{ color: "#0a66c2" }} /> },
+  { name: "WhatsApp", icon: <WhatsApp sx={{ color: "#25D366" }} /> },
+  { name: "Facebook", icon: <Facebook color="primary" /> },
+  { name: "Instagram", icon: <Instagram sx={{ color: "#E1306C" }} /> },
+  { name: "GitHub", icon: <GitHub sx={{ color: "#000" }} /> },
+];
+
+interface Link {
+  id: number;
+  text: string;
+  url: string;
+  platforms?: string;
+}
 
 export default function LinkTree() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [links, setLinks] = useState<Link[]>([]);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValues, setEditValues] = useState<Partial<Link>>({});
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const { userId, createLink, getUserLinks, removeLink, updateLink, errorMap } =
+    useApp();
 
-    const formData = new FormData(event.currentTarget);
-    selectedPlatforms.forEach((platform) => {
-      formData.append("platforms", platform);
-    });
+  useEffect(() => {
+    const fetchLinks = async () => {
+      if (!userId) return;
 
-    const result = await linktree(formData);
-    console.log(result);
+      const result = await getUserLinks(userId);
+      if (result) setLinks(result);
+      else setError(errorMap.getUserLinks || "Erro ao carregar links.");
+    };
 
-    if (result.success) {
+    fetchLinks();
+  }, [userId]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    selectedPlatforms.forEach((p) => formData.append("platforms", p));
+
+    const result = await createLink(formData);
+
+    if (result) {
       setMessage("Link enviado com sucesso!");
       setError(null);
       window.location.reload();
     } else {
-      setError(result.error || "Ocorreu um erro. Tente novamente.");
+      setError(errorMap.createLink || "Ocorreu um erro. Tente novamente.");
       setMessage(null);
     }
   };
 
+  const handleDelete = async (id: number) => {
+    await removeLink(id);
+    setLinks((prev) => prev.filter((link) => link.id !== id));
+  };
+
+  const handleEdit = (link: Link) => {
+    setEditingId(link.id);
+    setEditValues(link);
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditValues({});
+  };
+
+  const handleSave = async () => {
+    if (!editingId) return;
+
+    const result = await updateLink(editingId, {
+      text: editValues.text,
+      url: editValues.url,
+      platforms: editValues.platforms,
+    });
+
+    if (result) {
+      setLinks((prev) =>
+        prev.map((link) =>
+          link.id === editingId ? { ...link, ...editValues } : link
+        )
+      );
+      handleCancel();
+    } else {
+      setError(errorMap.updateLink || "Erro ao salvar link.");
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="text-lg lg:text-xl xl:text-2xl font-bold mb-6 text-gray-800">
-        LINKS
-      </h1>
+    <Paper sx={{ p: 3 }}>
+      <Typography variant="h6">Link</Typography>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded w-full"
-      >
-        <div className="mb-4">
-          <label
-            htmlFor="text"
-            className="block text-gray-700 font-medium mb-2"
+      <Stack component="form" spacing={3} width={400} onSubmit={handleSubmit}>
+        <TextField
+          name="text"
+          label="Texto"
+          variant="standard"
+          fullWidth
+          required
+        />
+        <TextField
+          name="url"
+          label="URL"
+          variant="standard"
+          fullWidth
+          required
+        />
+
+        <FormLabel component="legend">Escolha:</FormLabel>
+        <FormControl component="fieldset">
+          <RadioGroup
+            name="platform-radio-buttons-group"
+            value={selectedPlatforms}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedPlatforms((prev) =>
+                prev.includes(value)
+                  ? prev.filter((platform) => platform !== value)
+                  : [...prev, value]
+              );
+            }}
           >
-            Texto
-          </label>
-          <input
-            type="text"
-            name="text"
-            id="text"
-            placeholder="Digite seu text"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="url" className="block text-gray-700 font-medium mb-2">
-            URL
-          </label>
-          <input
-            type="url"
-            name="url"
-            id="url"
-            placeholder="Digite sua url"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            required
-          />
-        </div>
+            <Grid container spacing={2}>
+              {platforms.map((platform) => (
+                <Grid key={platform.name}>
+                  <FormControlLabel
+                    value={platform.name}
+                    control={<Radio />}
+                    label={
+                      <Stack direction="row" alignItems="center">
+                        {platform.icon}
+                        <span style={{ marginLeft: 8 }}>{platform.name}</span>
+                      </Stack>
+                    }
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </RadioGroup>
+        </FormControl>
 
-        <h1 className="block text-gray-700 font-medium mb-2 ">Escolha:</h1>
-        <div className="flex flex-col mt-4 space-y-2 sm:grid sm:grid-cols-3 sm:flex-none">
-          {[
-            { name: "Twitter", icon: <FaTwitter className="text-blue-500" /> },
-            {
-              name: "LinkedIn",
-              icon: <FaLinkedin className="text-blue-700" />,
-            },
-            {
-              name: "WhatsApp",
-              icon: <FaWhatsapp className="text-green-500" />,
-            },
-            {
-              name: "Facebook",
-              icon: <FaFacebook className="text-blue-600" />,
-            },
-            {
-              name: "Instagram",
-              icon: <FaInstagram className="text-pink-500" />,
-            },
-            {
-              name: "GitHub",
-              icon: <FaGithub className="text-black" />,
-            },
-          ].map((platform) => (
-            <label key={platform.name} className="flex items-center">
-              <input
-                type="checkbox"
-                value={platform.name}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setSelectedPlatforms((prev) => [...prev, platform.name]);
-                  } else {
-                    setSelectedPlatforms((prev) =>
-                      prev.filter((p) => p !== platform.name)
-                    );
-                  }
-                }}
-                className="mr-2"
-              />
-              {platform.icon}
-              <span className="ml-2">{platform.name}</span>
-            </label>
-          ))}
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors mt-8"
-        >
+        <Button variant="contained" fullWidth type="submit">
           Enviar
-        </button>
-      </form>
+        </Button>
 
-      {message && (
-        <p className="mt-4 text-lg font-semibold text-green-500">{message}</p>
-      )}
-      {error && (
-        <p className="mt-4 text-lg font-semibold text-red-500">{error}</p>
-      )}
-    </div>
+        {message && <Alert severity="success">{message}</Alert>}
+        {error && <Alert severity="error">{error}</Alert>}
+      </Stack>
+
+      <List
+        sx={{
+          mt: 1,
+          maxHeight: 300,
+          overflowY: "auto",
+          pr: 1,
+        }}
+      >
+        {links.map((link) =>
+          editingId === link.id ? (
+            <ListItem disablePadding key={link.id}>
+              <Stack direction="column" spacing={2} width="100%">
+                <TextField
+                  size="small"
+                  label="Texto"
+                  value={editValues.text || ""}
+                  onChange={(e) =>
+                    setEditValues({ ...editValues, text: e.target.value })
+                  }
+                  fullWidth
+                  sx={{ mb: 1 }}
+                />
+                <TextField
+                  size="small"
+                  label="URL"
+                  value={editValues.url || ""}
+                  onChange={(e) =>
+                    setEditValues({ ...editValues, url: e.target.value })
+                  }
+                  fullWidth
+                />
+              </Stack>
+              <IconButton onClick={handleSave}>
+                <Save color="warning" />
+              </IconButton>
+              <IconButton onClick={handleCancel}>
+                <Cancel color="error" />
+              </IconButton>
+            </ListItem>
+          ) : (
+            <ListItem disablePadding key={link.id}>
+              <ListItemText primary={link.text} secondary={link.url} />
+              <IconButton onClick={() => handleEdit(link)}>
+                <Edit color="warning" />
+              </IconButton>
+              <IconButton onClick={() => handleDelete(link.id)}>
+                <Delete color="error" />
+              </IconButton>
+            </ListItem>
+          )
+        )}
+      </List>
+    </Paper>
   );
 }

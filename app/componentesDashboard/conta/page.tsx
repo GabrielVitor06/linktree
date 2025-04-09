@@ -43,12 +43,6 @@ export default function Conta() {
     fetchUserProfile();
   }, []);
 
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   console.log("Formulário enviado para editar dados do usuário:", user);
-  // };
-  // onSubmit={handleSubmit}
-
   const handleSignOut = async () => {
     await signOut();
     router.push("/"); // Redireciona para a página de login

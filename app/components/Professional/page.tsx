@@ -1,11 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useApp } from "@/hook/useApp";
-import { Stack, Typography, Avatar, Button } from "@mui/material";
-import { purple } from "@mui/material/colors";
+import { useEffect, useState } from "react";
 import {
   Twitter,
   LinkedIn,
@@ -13,6 +9,9 @@ import {
   Facebook,
   Instagram,
 } from "@mui/icons-material";
+import { useApp } from "@/hook/useApp";
+import { Stack, Typography, Avatar, Button } from "@mui/material";
+import { purple } from "@mui/material/colors";
 
 interface UserLink {
   id: string;
@@ -22,48 +21,44 @@ interface UserLink {
 }
 
 export default function ProfessionalTemplate() {
-  const { username } = useParams();
-  const { getUserId, getUserLinks, getTitles } = useApp();
+  const { getUserLinks, getTitles, userId } = useApp();
 
   const [links, setLinks] = useState<UserLink[]>([]);
-  const [userTitle, setUserTitle] = useState<string | null>(null);
-  const [userSubTitle, setUserSubTitle] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const [subtitulo, setSubtitulo] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
-    const fetchUserData = async (username: string) => {
-      const userId = await getUserId(username);
+    const fetchUserData = async () => {
+      if (!userId) return;
 
-      if (!userId) {
-        console.error("User ID is null");
-        return;
-      }
+      try {
+        const [userLinks, userTitles] = await Promise.all([
+          getUserLinks(userId),
+          getTitles(),
+        ]);
 
-      const [userLinks, titles] = await Promise.all([
-        getUserLinks(userId),
-        getTitles(),
-      ]);
+        if (userLinks?.length) {
+          const formattedLinks = userLinks.map((link) => ({
+            ...link,
+            id: link.id.toString(),
+          }));
+          setLinks(formattedLinks);
+        }
 
-      const formattedLinks =
-        userLinks?.map((link) => ({
-          ...link,
-          id: link.id.toString(),
-        })) || [];
-
-      setLinks(formattedLinks);
-
-      if (titles && titles[0]) {
-        const { title, subtitulo, imageUrl } = titles[0];
-        setUserTitle(title);
-        setUserSubTitle(subtitulo);
-        setImageUrl(imageUrl);
+        if (userTitles?.length) {
+          const { title, subtitulo, imageUrl } = userTitles[0];
+          setTitle(title || "");
+          setSubtitulo(subtitulo || "");
+          setImageUrl(imageUrl || "");
+        }
+      } catch (err) {
+        console.error("Erro ao buscar dados:", err);
       }
     };
 
-    if (typeof username === "string") {
-      fetchUserData(username);
-    }
-  }, [username, getUserId, getUserLinks, getTitles]);
+    fetchUserData();
+  }, [userId]);
 
   const getIcon = (platform: string) => {
     const icons: Record<string, JSX.Element> = {
@@ -88,7 +83,7 @@ export default function ProfessionalTemplate() {
       }}
     >
       <Avatar
-        src={imageUrl || ""}
+        src={imageUrl}
         alt="Profile Avatar"
         sx={{
           width: { xs: 104, lg: 124, xl: 132 },
@@ -101,10 +96,10 @@ export default function ProfessionalTemplate() {
 
       <Stack textAlign="center">
         <Typography variant="h5" color="white" fontWeight={600}>
-          {userTitle}
+          {title}
         </Typography>
         <Typography variant="subtitle1" color="grey.400">
-          {userSubTitle}
+          {subtitulo}
         </Typography>
       </Stack>
 

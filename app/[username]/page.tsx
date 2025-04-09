@@ -6,12 +6,12 @@ import {
   getTemplateById,
 } from "@/lib/publicActions";
 
-interface PublicPageProps {
+type PublicPageParams = {
   params: { username: string };
-}
+};
 
-export default async function PublicPage(props: PublicPageProps) {
-  const { username } = await props.params;
+export default async function PublicPage({ params }: PublicPageParams) {
+  const { username } = params;
 
   const userId = await getUserIdByUsername(username);
   if (!userId) return notFound();
@@ -26,9 +26,5 @@ export default async function PublicPage(props: PublicPageProps) {
     () => import(`@/app/components/${template.filePath}/page`)
   );
 
-  return (
-    <div>
-      <TemplateComponent />
-    </div>
-  );
+  return <TemplateComponent />;
 }

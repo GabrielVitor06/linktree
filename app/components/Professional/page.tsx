@@ -84,7 +84,6 @@ export default function ProfessionalTemplate() {
     >
       <Avatar
         src={imageUrl}
-        alt="Profile Avatar"
         sx={{
           width: { xs: 104, lg: 124, xl: 132 },
           height: { xs: 104, lg: 124, xl: 132 },

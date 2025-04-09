@@ -6,13 +6,14 @@ import {
   getTemplateById,
 } from "@/lib/publicActions";
 
-// o Next já entende o tipo do parâmetro `params`
-export default async function PublicPage({
-  params,
-}: {
-  params: { username: string };
-}) {
-  const { username } = params;
+interface PageProps {
+  params: Promise<{
+    username: string;
+  }>;
+}
+
+export default async function PublicPage({ params }: PageProps) {
+  const { username } = await params;
 
   const userId = await getUserIdByUsername(username);
   if (!userId) return notFound();
@@ -28,4 +29,9 @@ export default async function PublicPage({
   );
 
   return <TemplateComponent />;
+}
+
+// Garante que o Next entenda que isso é uma rota dinâmica válida
+export async function generateStaticParams() {
+  return [];
 }

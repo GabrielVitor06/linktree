@@ -6,11 +6,12 @@ import {
   getTemplateById,
 } from "@/lib/publicActions";
 
-type PublicPageParams = {
+// o Next já entende o tipo do parâmetro `params`
+export default async function PublicPage({
+  params,
+}: {
   params: { username: string };
-};
-
-export default async function PublicPage({ params }: PublicPageParams) {
+}) {
   const { username } = params;
 
   const userId = await getUserIdByUsername(username);

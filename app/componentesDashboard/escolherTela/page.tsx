@@ -1,12 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  Alert,
+  CircularProgress,
+  Paper,
+  Stack,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import Menu from "@/components/navbar";
 
+type Template = {
+  id: number;
+  name: string;
+};
+
 const TemplateSelector: React.FC = () => {
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<Template[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const userId = "123";
 
@@ -14,19 +26,22 @@ const TemplateSelector: React.FC = () => {
     const fetchTemplates = async () => {
       try {
         const response = await fetch("/api/users");
-        if (!response.ok) {
-          throw new Error("Erro ao buscar templates");
-        }
+        if (!response.ok) throw new Error("Erro ao buscar templates");
         const data = await response.json();
 
         if (Array.isArray(data)) {
           setTemplates(data);
         } else {
-          throw new Error("Os dados não estão no formato esperado.");
+          throw new Error("Formato de dados inválido.");
         }
-      } catch (err: any) {
-        console.error(err);
-        setError(err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Ocorreu um erro desconhecido.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -47,7 +62,6 @@ const TemplateSelector: React.FC = () => {
       if (result.filePath) {
         alert(result.message);
         router.push("/Dashboard");
-        // window.location.href = `/components/${result.filePath}`; // Redirecione para a rota do template selecionado
       } else {
         alert("Erro: Caminho do template não encontrado");
       }
@@ -59,29 +73,73 @@ const TemplateSelector: React.FC = () => {
   return (
     <>
       <Menu />
-      <br />
-      <div className="flex justify-center items-center min-h-screen">
-        <div>
-          <h1 className="text-center lg:text-lg xl:text-xl 2xl:text-2xl font-bold text-gray-800 mb-6">
-            Escolha um Template
-          </h1>
-          {error && <p className="text-red-500">{error}</p>}
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-12">
+
+      <>
+        <Typography
+          variant="h5"
+          component="h1"
+          align="center"
+          fontWeight={600}
+          mb={4}
+          mt={4}
+        >
+          Selecione um Template
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ maxWidth: 600, mb: 4 }}>
+            {error}
+          </Alert>
+        )}
+
+        {loading ? (
+          <Stack display="flex" justifyContent="center" mt={10}>
+            <CircularProgress color="primary" size={48} />
+          </Stack>
+        ) : (
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
             {templates.map((template) => (
-              <li key={template.id} className="flex flex-col items-center">
-                <button
-                  onClick={() => handleSelectTemplate(template.id)}
-                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow w-full text-center border border-gray-200 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              <Paper
+                key={template.id}
+                onClick={() => handleSelectTemplate(template.id)}
+                elevation={3}
+                sx={{
+                  cursor: "pointer",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: 6,
+                  },
+                }}
+              >
+                <Stack
+                  width={150}
+                  height={150}
+                  borderRadius={4}
+                  direction="row"
+                  alignItems="center"
+                  p={2}
                 >
-                  <p className="lg:text-lg xl:text-xl 2xl:text-2xl font-semibold text-gray-700">
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 500,
+                      textAlign: "center",
+                    }}
+                  >
                     {template.name}
-                  </p>
-                </button>
-              </li>
+                  </Typography>
+                </Stack>
+              </Paper>
             ))}
-          </ul>
-        </div>
-      </div>
+          </Stack>
+        )}
+      </>
     </>
   );
 };

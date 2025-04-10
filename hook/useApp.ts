@@ -80,7 +80,6 @@ export function useApp() {
       ) as Record<RequestKey, string | null>
   );
 
-  // Pega o userId da sessão apenas uma vez
   useEffect(() => {
     const fetchSession = async () => {
       const session = (await getSession()) as { id: number } | null;
@@ -137,7 +136,7 @@ export function useApp() {
       handleRequest("removeTitle", () => deleteTitle(titleId)),
     updateTitle: (
       titleId: number,
-      updatedValues: { title?: string; subtitulo?: string }
+      updatedValues: { title?: string; subtitulo?: string; imageUrl?: string }
     ) =>
       handleRequest("updateTitle", () => editarTitle(titleId, updatedValues)),
 

@@ -1,97 +1,249 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaXmark, FaBars, FaGear } from "react-icons/fa6";
-import React, { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  Box,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
+import {
+  Menu as MenuIcon,
+  Close,
+  Dashboard,
+  Settings,
+} from "@mui/icons-material";
 import FollowButton from "./buttonLink";
-import { MdOutlineDashboard } from "react-icons/md";
+import { getSession, signOut } from "@/lib/auth";
+import { fetchUserData } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+  Link as MuiLink,
+  Stack,
+} from "@mui/material";
+
+type User = {
+  id: number;
+  name: string | null;
+  email: string;
+  password: string;
+} | null;
 
 export default function Menu() {
-  const [showMenu, setShowMenu] = useState(false);
+  const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
+  const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [isMenuUp, setIsMenuUp] = useState(true);
-  const combinedClickHandler = () => {
-    setShowMenu(!showMenu);
-    setIsMenuUp(!isMenuUp);
+  const toggleMenuDrawer = () => {
+    setMenuDrawerOpen(!menuDrawerOpen);
   };
+
+  const toggleSettingsDrawer = () => {
+    setSettingsDrawerOpen(!settingsDrawerOpen);
+  };
+
+  const [user, setUser] = useState<User>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      setLoading(true);
+      const session = await getSession();
+
+      if (session && session.id) {
+        const userId = Number(session.id);
+        try {
+          const userData = await fetchUserData(userId);
+          setUser(userData);
+        } catch {
+          setError("Erro ao buscar dados do usuário.");
+        }
+      } else {
+        setError("Usuário não autenticado.");
+      }
+
+      setLoading(false);
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
+
+  if (loading)
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+
+  if (error)
+    return (
+      <Box mt={4} textAlign="center">
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+
+  if (!user)
+    return (
+      <Box mt={4} textAlign="center">
+        <Typography>Nenhum dado do usuário encontrado.</Typography>
+      </Box>
+    );
 
   return (
     <>
-      <nav className="bg-gray-100 h-12 lg:h-16 w-full text-gray-800 m-0 p-0 flex items-center fixed z-40  xl:justify-center">
-        <h1 className="ml-4 font-bold text-sm  lg:text-xl xl:text-2xl 2xl:text-3xl lg:w-96">
-          Linktree
-        </h1>
-        <button
-          className="flex flex-1 justify-end text-2xl mr-4 sm:hidden"
-          onClick={combinedClickHandler}
-        >
-          <span>{isMenuUp ? <FaBars /> : <FaXmark />}</span>
-        </button>
-        <ul
-          className={` ${
-            showMenu ? "left-0" : "left-[-400px]"
-          } z-50 bg-white text-gray-800 space-y-4 text-lg font-sans top-0 w-52 md-flex fixed m-0 h-screen transition-all delay-500 ease-in duration-500`}
-        >
-          <li className="mt-16 ml-2 ">
-            {" "}
-            <span className="ml-6 hover:text-custom-rgb hover:text-xl space-x-2 flex items-center">
-              <MdOutlineDashboard />
-              <Link href="/Dashboard" className="underline">
+      <AppBar position="fixed">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography variant="h6">Linktree</Typography>
+          {isMobile ? (
+            <IconButton edge="end" color="inherit" onClick={toggleMenuDrawer}>
+              {menuDrawerOpen ? <Close /> : <MenuIcon />}
+            </IconButton>
+          ) : (
+            <Stack direction="row" gap={3}>
+              <Button
+                component={Link}
+                href="/Dashboard"
+                color="inherit"
+                startIcon={<Dashboard />}
+              >
                 Dashboard
-              </Link>
-            </span>
-          </li>
-
-          <li>
-            {" "}
-            <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
+              </Button>
               <FollowButton />
-            </span>
-          </li>
-          <li className="ml-2">
-            {" "}
-            <span className="ml-6 hover:text-xl space-x-2  flex items-center">
-              <FaGear />
-              <Link href="/componentesDashboard/conta" className="underline">
+              <Button
+                onClick={toggleSettingsDrawer}
+                color="inherit"
+                startIcon={<Settings />}
+              >
                 Configurações
-              </Link>
-            </span>
-          </li>
-        </ul>
+              </Button>
+            </Stack>
+          )}
+        </Toolbar>
+      </AppBar>
 
-        {/* Response */}
-
-        <ul
-          className={`  z-50 space-x-8 text-md xl:text-lg 2xl:text-xl font-sans hidden sm:block w-full mr-14 bg-transparent xl:max-w-[3500px] `}
+      <Drawer anchor="left" open={menuDrawerOpen} onClose={toggleMenuDrawer}>
+        <Stack
+          width={250}
+          onClick={toggleMenuDrawer}
+          onKeyDown={toggleMenuDrawer}
+          direction="column"
+          alignItems="flex-start"
+          p={4}
         >
-          <div className=" flex items-center justify-end ">
-            <li className=" ml-5 ">
-              {" "}
-              <span className="ml-6 hover:text-custom-rgb hover:text-xl space-x-2 flex items-center">
-                <MdOutlineDashboard />
-                <Link href="/Dashboard" className="underline">
-                  Dashboard
-                </Link>
-              </span>
-            </li>
-            <li className="ml-5  ">
-              {" "}
-              <span className=" hover:text-custom-rgb hover:text-xl xl:hover:text-2xl 2xl:hover:text-3xl ">
-                <FollowButton />
-              </span>
-            </li>
-            <li className="ml-5">
-              {" "}
-              <span className=" hover:text-xl space-x-2  flex items-center">
-                <FaGear />
-                <Link href="/componentesDashboard/conta" className="underline">
-                  Configurações
-                </Link>
-              </span>
-            </li>
-          </div>
-        </ul>
-      </nav>
+          <Typography variant="h6" fontWeight={500} noWrap mb={2}>
+            Linktree
+          </Typography>
+          <Button
+            component={Link}
+            href="/Dashboard"
+            color="inherit"
+            startIcon={<Dashboard />}
+          >
+            Dashboard
+          </Button>
+          <FollowButton />
+          <Button
+            onClick={toggleSettingsDrawer}
+            color="inherit"
+            startIcon={<Settings />}
+          >
+            Configurações
+          </Button>
+        </Stack>
+      </Drawer>
+
+      <Drawer
+        anchor="right"
+        open={settingsDrawerOpen}
+        onClose={toggleSettingsDrawer}
+      >
+        <Stack width={300} p={4}>
+          <Typography variant="h5">Perfil do Usuário</Typography>
+
+          <Box component="form" noValidate autoComplete="off" mt={3}>
+            <TextField
+              label="Nome"
+              value={user.name || ""}
+              fullWidth
+              margin="normal"
+              size="small"
+              slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }}
+            />
+            <TextField
+              label="Email"
+              type="email"
+              value={user.email}
+              fullWidth
+              margin="normal"
+              size="small"
+              slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }}
+            />
+            <TextField
+              label="Senha"
+              type="password"
+              value="••••••••"
+              fullWidth
+              margin="normal"
+              size="small"
+              slotProps={{
+                input: {
+                  readOnly: true,
+                },
+              }}
+            />
+
+            <Box mt={1}>
+              <MuiLink
+                component={Link}
+                href="/redefinir-senha"
+                underline="hover"
+                color="primary"
+                fontSize={14}
+              >
+                Redefinir senha
+              </MuiLink>
+            </Box>
+
+            <Box display="flex" justifyContent="flex-end" mt={4}>
+              <Button variant="contained" color="error" onClick={handleSignOut}>
+                Sair
+              </Button>
+            </Box>
+          </Box>
+        </Stack>
+      </Drawer>
+
+      <Toolbar />
     </>
   );
 }

@@ -50,7 +50,11 @@ export default function Subcredenciais() {
 
     try {
       if (isEditMode && currentTitleId) {
-        const result = await updateTitle(currentTitleId, { title, subtitulo });
+        const result = await updateTitle(currentTitleId, {
+          title,
+          subtitulo,
+          imageUrl,
+        });
 
         if (result) {
           setMessage("Título editado com sucesso!");
@@ -59,7 +63,7 @@ export default function Subcredenciais() {
         }
       } else {
         const formData = new FormData(event.currentTarget);
-        formData.set("imageUrl", imageUrl); // Garantir envio da imagem
+        formData.set("imageUrl", imageUrl);
         const result = await createTitle(formData);
 
         if (result) {

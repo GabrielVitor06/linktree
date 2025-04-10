@@ -18,6 +18,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  Link,
 } from "@mui/material";
 import {
   Twitter,
@@ -82,7 +83,19 @@ export default function LinkTree() {
     if (result) {
       setMessage("Link enviado com sucesso!");
       setError(null);
-      window.location.reload();
+      if ("id" in result && "text" in result && "url" in result) {
+        if (
+          typeof result.id === "number" &&
+          typeof result.text === "string" &&
+          typeof result.url === "string"
+        ) {
+          setLinks((prev) => [...prev, result as Link]); // ⬅️ Atualiza o estado localmente
+        } else {
+          setError("Ocorreu um erro ao processar o link retornado.");
+        }
+      } else {
+        setError("Ocorreu um erro ao processar o link retornado.");
+      }
     } else {
       setError(errorMap.createLink || "Ocorreu um erro. Tente novamente.");
       setMessage(null);
@@ -105,24 +118,23 @@ export default function LinkTree() {
   };
 
   const handleSave = async () => {
-    if (!editingId) return;
+    if (!editingId || !editValues.text || !editValues.url) {
+      setError("Preencha todos os campos para salvar.");
+      return;
+    }
 
-    const result = await updateLink(editingId, {
+    await updateLink(editingId, {
       text: editValues.text,
       url: editValues.url,
-      platforms: editValues.platforms,
+      platforms: editValues.platforms || "",
     });
 
-    if (result) {
-      setLinks((prev) =>
-        prev.map((link) =>
-          link.id === editingId ? { ...link, ...editValues } : link
-        )
-      );
-      handleCancel();
-    } else {
-      setError(errorMap.updateLink || "Erro ao salvar link.");
-    }
+    setLinks((prev) =>
+      prev.map((link) =>
+        link.id === editingId ? { ...link, ...editValues } : link
+      )
+    );
+    handleCancel();
   };
 
   return (
@@ -206,8 +218,9 @@ export default function LinkTree() {
                     setEditValues({ ...editValues, text: e.target.value })
                   }
                   fullWidth
-                  sx={{ mb: 1 }}
+                  required
                 />
+
                 <TextField
                   size="small"
                   label="URL"
@@ -227,13 +240,32 @@ export default function LinkTree() {
             </ListItem>
           ) : (
             <ListItem disablePadding key={link.id}>
-              <ListItemText primary={link.text} secondary={link.url} />
-              <IconButton onClick={() => handleEdit(link)}>
-                <Edit color="warning" />
-              </IconButton>
-              <IconButton onClick={() => handleDelete(link.id)}>
-                <Delete color="error" />
-              </IconButton>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                width="100%"
+              >
+                <ListItemText
+                  primary={link.text}
+                  secondary={
+                    <Link
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.url}
+                    </Link>
+                  }
+                />
+                <Stack direction="row">
+                  <IconButton onClick={() => handleEdit(link)}>
+                    <Edit color="warning" />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(link.id)}>
+                    <Delete color="error" />
+                  </IconButton>
+                </Stack>
+              </Stack>
             </ListItem>
           )
         )}

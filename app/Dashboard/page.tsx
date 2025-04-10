@@ -14,7 +14,7 @@ export default function Dashboard() {
         <Stack
           justifyContent="center"
           alignItems="center"
-          height={"90vh"}
+          height={"65vh"}
           spacing={3}
         >
           <Button

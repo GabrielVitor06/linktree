@@ -81,7 +81,7 @@ export default function Subcredenciais() {
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6">Títulos</Typography>
-      <Stack component="form" width={400} spacing={4} onSubmit={handleSubmit}>
+      <Stack component="form" spacing={4} onSubmit={handleSubmit}>
         <FormControl fullWidth>
           <TextField
             name="title"

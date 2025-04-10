@@ -10,25 +10,18 @@ export default function Dashboard() {
   return (
     <>
       <Menu />
-      <Stack p={4}>
-        <Stack
-          justifyContent="center"
-          alignItems="center"
-          height={"65vh"}
-          spacing={3}
+      <Stack justifyContent="center" alignItems="center" spacing={2} mt={2}>
+        <Button
+          variant="outlined"
+          startIcon={<MdAddToHomeScreen />}
+          href="/componentesDashboard/escolherTela"
+          disableElevation
         >
-          <Button
-            variant="outlined"
-            startIcon={<MdAddToHomeScreen />}
-            href="/componentesDashboard/escolherTela"
-            disableElevation
-          >
-            Escolha sua tela
-          </Button>
-          <Stack spacing={4}>
-            <Subcredenciais />
-            <MyLinks />
-          </Stack>
+          Escolha sua tela
+        </Button>
+        <Stack spacing={2}>
+          <Subcredenciais />
+          <MyLinks />
         </Stack>
       </Stack>
     </>

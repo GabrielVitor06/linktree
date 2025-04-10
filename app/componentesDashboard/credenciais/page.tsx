@@ -139,9 +139,9 @@ export default function LinkTree() {
 
   return (
     <Paper sx={{ p: 3 }}>
-      <Typography variant="h6">Link</Typography>
+      <Typography variant="h6">Links</Typography>
 
-      <Stack component="form" spacing={3} width={400} onSubmit={handleSubmit}>
+      <Stack component="form" spacing={3} onSubmit={handleSubmit}>
         <TextField
           name="text"
           label="Texto"

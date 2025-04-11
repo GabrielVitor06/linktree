@@ -1,14 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Alert,
-  CircularProgress,
-  Paper,
-  Stack,
-} from "@mui/material";
+import { Typography, Paper, Stack } from "@mui/material";
 import { useRouter } from "next/navigation";
-import Menu from "@/components/navbar";
 
 type Template = {
   id: number;
@@ -17,8 +10,6 @@ type Template = {
 
 const TemplateSelector: React.FC = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const userId = "123";
 
@@ -36,12 +27,10 @@ const TemplateSelector: React.FC = () => {
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
-          setError(err.message);
+          console.log(err.message);
         } else {
-          setError("Ocorreu um erro desconhecido.");
+          console.log("Ocorreu um erro desconhecido.");
         }
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -72,74 +61,50 @@ const TemplateSelector: React.FC = () => {
 
   return (
     <>
-      <Menu />
-
-      <>
-        <Typography
-          variant="h5"
-          component="h1"
-          align="center"
-          fontWeight={600}
-          mb={4}
-          mt={4}
-        >
-          Selecione um Template
-        </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ maxWidth: 600, mb: 4 }}>
-            {error}
-          </Alert>
-        )}
-
-        {loading ? (
-          <Stack display="flex" justifyContent="center" mt={10}>
-            <CircularProgress color="primary" size={48} />
-          </Stack>
-        ) : (
-          <Stack
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
+      <Typography variant="h5" component="h1" align="center" mb={4} mt={4}>
+        Selecione um Template
+      </Typography>
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={2}
+      >
+        {templates.map((template) => (
+          <Paper
+            key={template.id}
+            onClick={() => handleSelectTemplate(template.id)}
+            elevation={3}
+            sx={{
+              cursor: "pointer",
+              transition: "transform 0.2s",
+              "&:hover": {
+                transform: "scale(1.05)",
+                boxShadow: 6,
+              },
+            }}
           >
-            {templates.map((template) => (
-              <Paper
-                key={template.id}
-                onClick={() => handleSelectTemplate(template.id)}
-                elevation={3}
+            <Stack
+              width={150}
+              height={150}
+              borderRadius={4}
+              direction="row"
+              alignItems="center"
+              p={2}
+            >
+              <Typography
+                variant="h6"
                 sx={{
-                  cursor: "pointer",
-                  transition: "transform 0.2s",
-                  "&:hover": {
-                    transform: "scale(1.05)",
-                    boxShadow: 6,
-                  },
+                  fontWeight: 500,
+                  textAlign: "center",
                 }}
               >
-                <Stack
-                  width={150}
-                  height={150}
-                  borderRadius={4}
-                  direction="row"
-                  alignItems="center"
-                  p={2}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 500,
-                      textAlign: "center",
-                    }}
-                  >
-                    {template.name}
-                  </Typography>
-                </Stack>
-              </Paper>
-            ))}
-          </Stack>
-        )}
-      </>
+                {template.name}
+              </Typography>
+            </Stack>
+          </Paper>
+        ))}
+      </Stack>
     </>
   );
 };

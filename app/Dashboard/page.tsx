@@ -1,29 +1,55 @@
 "use client";
 
+import React from "react";
+import Menu from "@/components/navbar";
+import Footer from "@/components/footer";
 import MyLinks from "@/app/componentesDashboard/credenciais/page";
 import Subcredenciais from "@/app/componentesDashboard/subCredenciais/page";
-import Menu from "@/components/navbar";
-import { MdAddToHomeScreen } from "react-icons/md";
-import { Stack, Button } from "@mui/material";
+import TemplateSelector from "@/app/componentesDashboard/escolherTela/page";
+import { Tab, Box, Container } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 export default function Dashboard() {
+  const [value, setValue] = React.useState("1");
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
+
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Menu />
-      <Stack justifyContent="center" alignItems="center" spacing={2} mt={2}>
-        <Button
-          variant="outlined"
-          startIcon={<MdAddToHomeScreen />}
-          href="/componentesDashboard/escolherTela"
-          disableElevation
-        >
-          Escolha sua tela
-        </Button>
-        <Stack spacing={2}>
-          <Subcredenciais />
-          <MyLinks />
-        </Stack>
-      </Stack>
-    </>
+
+      <TabContext value={value}>
+        <Container maxWidth="md" sx={{ flex: 1, py: 4 }}>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <TabPanel value="1" sx={{ width: "100%" }}>
+              <Subcredenciais />
+            </TabPanel>
+            <TabPanel value="2" sx={{ width: "100%" }}>
+              <MyLinks />
+            </TabPanel>
+            <TabPanel value="3" sx={{ width: "100%" }}>
+              <TemplateSelector />
+            </TabPanel>
+          </Box>
+          <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+            <TabList onChange={handleChange} aria-label="Dashboard Tabs">
+              <Tab label="Títulos" value="1" />
+              <Tab label="Links" value="2" />
+              <Tab label="Escolha de tela" value="3" />
+            </TabList>
+          </Box>
+        </Container>
+      </TabContext>
+
+      <Footer />
+    </Box>
   );
 }

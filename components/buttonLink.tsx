@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { getUserBySessionId } from "@/lib/publicActions";
 import { getSession } from "@/lib/auth";
-import { FaTabletScreenButton } from "react-icons/fa6";
-import { Box, Button } from "@mui/material";
+import { Box, Chip } from "@mui/material";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 export default function FollowButton() {
   const [username, setUsername] = useState<string | null>(null);
@@ -38,15 +37,13 @@ export default function FollowButton() {
 
   return (
     <Box display="flex" justifyContent="center">
-      <Link href={`/${username}`} passHref>
-        <Button
-          variant="text"
-          color="inherit"
-          startIcon={<FaTabletScreenButton />}
-        >
-          Sua tela
-        </Button>
-      </Link>
+      <Chip
+        color="success"
+        icon={<RemoveRedEyeIcon />}
+        label="Ver"
+        component="a"
+        href={`/${username}`}
+      />
     </Box>
   );
 }

@@ -9,15 +9,8 @@ import {
   IconButton,
   Drawer,
   Box,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
-import {
-  Menu as MenuIcon,
-  Close,
-  Dashboard,
-  Settings,
-} from "@mui/icons-material";
+import { Settings } from "@mui/icons-material";
 import FollowButton from "./buttonLink";
 import { getSession, signOut } from "@/lib/auth";
 import { fetchUserData } from "@/lib/actions";
@@ -39,15 +32,7 @@ type User = {
 } | null;
 
 export default function Menu() {
-  const [menuDrawerOpen, setMenuDrawerOpen] = useState(false);
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const toggleMenuDrawer = () => {
-    setMenuDrawerOpen(!menuDrawerOpen);
-  };
-
   const toggleSettingsDrawer = () => {
     setSettingsDrawerOpen(!settingsDrawerOpen);
   };
@@ -116,63 +101,18 @@ export default function Menu() {
       <AppBar position="fixed">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">Linktree</Typography>
-          {isMobile ? (
-            <IconButton edge="end" color="inherit" onClick={toggleMenuDrawer}>
-              {menuDrawerOpen ? <Close /> : <MenuIcon />}
+          <Stack direction="row" gap={3}>
+            <FollowButton />
+            <IconButton
+              onClick={toggleSettingsDrawer}
+              edge="end"
+              color="inherit"
+            >
+              <Settings />
             </IconButton>
-          ) : (
-            <Stack direction="row" gap={3}>
-              <Button
-                component={Link}
-                href="/Dashboard"
-                color="inherit"
-                startIcon={<Dashboard />}
-              >
-                Dashboard
-              </Button>
-              <FollowButton />
-              <Button
-                onClick={toggleSettingsDrawer}
-                color="inherit"
-                startIcon={<Settings />}
-              >
-                Configurações
-              </Button>
-            </Stack>
-          )}
+          </Stack>
         </Toolbar>
       </AppBar>
-
-      <Drawer anchor="left" open={menuDrawerOpen} onClose={toggleMenuDrawer}>
-        <Stack
-          width={250}
-          onClick={toggleMenuDrawer}
-          onKeyDown={toggleMenuDrawer}
-          direction="column"
-          alignItems="flex-start"
-          p={4}
-        >
-          <Typography variant="h6" fontWeight={500} noWrap mb={2}>
-            Linktree
-          </Typography>
-          <Button
-            component={Link}
-            href="/Dashboard"
-            color="inherit"
-            startIcon={<Dashboard />}
-          >
-            Dashboard
-          </Button>
-          <FollowButton />
-          <Button
-            onClick={toggleSettingsDrawer}
-            color="inherit"
-            startIcon={<Settings />}
-          >
-            Configurações
-          </Button>
-        </Stack>
-      </Drawer>
 
       <Drawer
         anchor="right"

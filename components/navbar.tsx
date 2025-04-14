@@ -119,7 +119,7 @@ export default function Menu() {
         open={settingsDrawerOpen}
         onClose={toggleSettingsDrawer}
       >
-        <Stack width={300} p={4}>
+        <Stack width={300} p={2}>
           <Typography variant="h5">Perfil do Usuário</Typography>
 
           <Box component="form" noValidate autoComplete="off" mt={3}>

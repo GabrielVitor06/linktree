@@ -11,22 +11,27 @@ import {
   Alert,
   IconButton,
   InputAdornment,
+  Divider,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
+import { signIn } from "next-auth/react";
 
 export default function Cadastro() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const formData = new FormData(event.currentTarget);
+
+    setLoading(true);
     const result = await Signup(formData);
+    setLoading(false);
 
     if (result.success) {
-      router.push("/");
+      router.push("/Dashboard");
     } else {
       setError(result.error || "Erro desconhecido.");
     }
@@ -107,16 +112,36 @@ export default function Cadastro() {
           }}
         />
 
+        <Divider sx={{ my: 3 }}>ou</Divider>
+
+        <Button
+          onClick={() => signIn("google", { callbackUrl: "/Dashboard" })}
+          variant="outlined"
+          fullWidth
+          color="inherit"
+          sx={{ mb: 2 }}
+          startIcon={<Google />}
+        >
+          Cadastrar com o Google
+        </Button>
+
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          mt={4}
+          mt={2}
         >
-          <Button href="/">Já possui uma conta?</Button>
+          <Button href="/" style={{ color: "#1976d2" }}>
+            Já possui uma conta?
+          </Button>
 
-          <Button type="submit" variant="contained" color="primary">
-            Cadastrar
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
+            {loading ? "Cadastrando..." : "Cadastrar"}
           </Button>
         </Box>
       </Box>

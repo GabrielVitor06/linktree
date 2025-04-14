@@ -384,5 +384,9 @@ export async function confirmPasswordReset(
 }
 
 export async function signOut() {
-  (await cookies()).delete("session");
+  const cookieStore = cookies();
+
+  (await cookieStore).getAll().forEach(async (cookie) => {
+    (await cookieStore).delete(cookie.name);
+  });
 }

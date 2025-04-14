@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getUserBySessionId } from "@/lib/publicActions";
 import { getSession } from "@/lib/auth";
-import { Box, Chip } from "@mui/material";
+import { Chip } from "@mui/material";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 export default function FollowButton() {
@@ -36,14 +36,12 @@ export default function FollowButton() {
   }, []);
 
   return (
-    <Box display="flex" justifyContent="center">
-      <Chip
-        color="success"
-        icon={<RemoveRedEyeIcon />}
-        label="Ver"
-        component="a"
-        href={`/${username}`}
-      />
-    </Box>
+    <Chip
+      color="secondary"
+      icon={<RemoveRedEyeIcon />}
+      label="Ver"
+      component="a"
+      href={`/${username}`}
+    />
   );
 }

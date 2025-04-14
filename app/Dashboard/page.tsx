@@ -3,9 +3,9 @@
 import React from "react";
 import Menu from "@/components/navbar";
 import Footer from "@/components/footer";
-import MyLinks from "@/app/componentesDashboard/credenciais/page";
-import Subcredenciais from "@/app/componentesDashboard/subCredenciais/page";
-import TemplateSelector from "@/app/componentesDashboard/escolherTela/page";
+import MyLinks from "@/app/Dashboard/componentesDashboard/credenciais/page";
+import Subcredenciais from "@/app/Dashboard/componentesDashboard/subCredenciais/page";
+import TemplateSelector from "@/app/Dashboard/componentesDashboard/escolherTela/page";
 import { Tab, Box, Container } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 

@@ -12,8 +12,10 @@ import {
   Alert,
   IconButton,
   InputAdornment,
+  Divider,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   const router = useRouter();
@@ -56,7 +58,8 @@ export default function Login() {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      margin={2}
+      padding={2}
+      mt={12}
     >
       <Box
         component="form"
@@ -68,8 +71,8 @@ export default function Login() {
         width="100%"
         maxWidth="600px"
       >
-        <Typography variant="h4" component="h2" textAlign="center" mb={3}>
-          Login
+        <Typography variant="h4" component="h2" textAlign="center" mb={4}>
+          Bem-vindo de volta
         </Typography>
 
         {error && (
@@ -85,21 +88,17 @@ export default function Login() {
           type="email"
           required
           size="small"
+          margin="normal"
         />
-
-        <Box display="flex" justifyContent="end" alignItems="center" mt={2}>
-          <Link href="/redefinir-senha" style={{ color: "#1976d2" }}>
-            Esqueceu a senha?
-          </Link>
-        </Box>
 
         <TextField
           fullWidth
           name="password"
           type={showPassword ? "text" : "password"}
-          label="Password"
+          label="Senha"
           size="small"
           required
+          margin="normal"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -119,21 +118,46 @@ export default function Login() {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          mt={4}
+          mt={1}
+          mb={3}
         >
-          <Button href="/cadastro" style={{ color: "#1976d2" }}>
-            Não possui uma conta?
-          </Button>
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
+          <Link
+            href="/redefinir-senha"
+            style={{ color: "#1976d2", fontSize: "0.875rem" }}
           >
-            {loading ? "Entrando..." : "Entrar"}
-          </Button>
+            Esqueceu a senha?
+          </Link>
+          <Link
+            href="/cadastro"
+            style={{ color: "#1976d2", fontSize: "0.875rem" }}
+          >
+            Criar conta
+          </Link>
         </Box>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+          fullWidth
+          size="large"
+        >
+          {loading ? "Entrando..." : "Entrar"}
+        </Button>
+
+        <Divider sx={{ my: 3 }}>ou</Divider>
+
+        <Button
+          onClick={() => signIn("google", { callbackUrl: "/Dashboard" })}
+          variant="outlined"
+          fullWidth
+          color="inherit"
+          sx={{ mb: 2 }}
+          startIcon={<Google />}
+        >
+          Cadastrar com o Google
+        </Button>
       </Box>
     </Box>
   );

@@ -52,91 +52,93 @@ export default function Login() {
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      boxShadow={1}
-      borderRadius={2}
-      p={4}
-      width="100%"
-      maxWidth="600px"
-      mx="auto"
-      mt={8}
-    >
-      <Typography variant="h4" component="h2" textAlign="center" mb={4}>
-        Bem-vindo de volta
-      </Typography>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      <TextField
-        fullWidth
-        label="E-mail"
-        name="email"
-        type="email"
-        required
-        size="small"
-        margin="normal"
-      />
-
-      <TextField
-        fullWidth
-        name="password"
-        type={showPassword ? "text" : "password"}
-        label="Senha"
-        size="small"
-        required
-        margin="normal"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => setShowPassword(!showPassword)}
-                edge="end"
-                aria-label="toggle password visibility"
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-
+    <Box p={2}>
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mt={1}
-        mb={3}
+        component="form"
+        onSubmit={handleSubmit}
+        boxShadow={1}
+        borderRadius={2}
+        p={4}
+        width="100%"
+        maxWidth="600px"
+        mx="auto"
+        mt={8}
       >
-        <Button href="/redefinir-senha">Esqueceu a senha?</Button>
-        <Button href="/cadastro">Criar conta</Button>
+        <Typography variant="h4" component="h2" textAlign="center" mb={4}>
+          Bem-vindo de volta
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        <TextField
+          fullWidth
+          label="E-mail"
+          name="email"
+          type="email"
+          required
+          size="small"
+          margin="normal"
+        />
+
+        <TextField
+          fullWidth
+          name="password"
+          type={showPassword ? "text" : "password"}
+          label="Senha"
+          size="small"
+          required
+          margin="normal"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                  aria-label="toggle password visibility"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={1}
+          mb={3}
+        >
+          <Button href="/redefinir-senha">Esqueceu a senha?</Button>
+          <Button href="/cadastro">Criar conta</Button>
+        </Box>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+          fullWidth
+          size="large"
+        >
+          {loading ? "Entrando..." : "Entrar"}
+        </Button>
+
+        <Divider sx={{ my: 3 }}>ou</Divider>
+
+        <Button
+          onClick={() => signIn("google", { callbackUrl: "/Dashboard" })}
+          fullWidth
+          startIcon={<Google />}
+        >
+          Entrar com o Google
+        </Button>
       </Box>
-
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        disabled={loading}
-        fullWidth
-        size="large"
-      >
-        {loading ? "Entrando..." : "Entrar"}
-      </Button>
-
-      <Divider sx={{ my: 3 }}>ou</Divider>
-
-      <Button
-        onClick={() => signIn("google", { callbackUrl: "/Dashboard" })}
-        fullWidth
-        startIcon={<Google />}
-      >
-        Entrar com o Google
-      </Button>
     </Box>
   );
 }

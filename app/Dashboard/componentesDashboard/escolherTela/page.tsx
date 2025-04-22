@@ -64,44 +64,45 @@ const TemplateSelector: React.FC = () => {
       <Typography variant="h5" component="h1" align="center" mb={4} mt={4}>
         Selecione um Template
       </Typography>
+
       <Stack
         direction="row"
         justifyContent="center"
         alignItems="center"
-        spacing={2}
+        spacing={3}
+        flexWrap="wrap"
       >
         {templates.map((template) => (
           <Paper
             key={template.id}
             onClick={() => handleSelectTemplate(template.id)}
-            elevation={3}
+            elevation={4}
             sx={{
+              width: 180,
+              height: 180,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
-              transition: "transform 0.2s",
+              borderRadius: 4,
+              bgcolor: "background.paper",
+              transition: "transform 0.3s, box-shadow 0.3s",
               "&:hover": {
-                transform: "scale(1.05)",
-                boxShadow: 6,
+                transform: "scale(1.06)",
+                boxShadow: 8,
               },
             }}
           >
-            <Stack
-              width={150}
-              height={150}
-              borderRadius={4}
-              direction="row"
-              alignItems="center"
-              p={2}
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                textAlign: "center",
+                px: 2,
+              }}
             >
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 500,
-                  textAlign: "center",
-                }}
-              >
-                {template.name}
-              </Typography>
-            </Stack>
+              {template.name}
+            </Typography>
           </Paper>
         ))}
       </Stack>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   Stack,
@@ -9,10 +9,8 @@ import {
   Alert,
   FormLabel,
   FormControlLabel,
-  RadioGroup,
-  Radio,
+  Checkbox,
   Paper,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -57,6 +55,7 @@ export default function LinkTree() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValues, setEditValues] = useState<Partial<Link>>({});
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { userId, createLink, getUserLinks, removeLink, updateLink, errorMap } =
     useApp();
@@ -64,12 +63,10 @@ export default function LinkTree() {
   useEffect(() => {
     const fetchLinks = async () => {
       if (!userId) return;
-
       const result = await getUserLinks(userId);
       if (result) setLinks(result);
       else setError(errorMap.getUserLinks || "Erro ao carregar links.");
     };
-
     fetchLinks();
   }, [userId]);
 
@@ -79,25 +76,27 @@ export default function LinkTree() {
     selectedPlatforms.forEach((p) => formData.append("platforms", p));
 
     const result = await createLink(formData);
+    if (result && result.success && result.data) {
+      const link = result.data as Link;
 
-    if (result) {
-      setMessage("Link enviado com sucesso!");
-      setError(null);
-      if ("id" in result && "text" in result && "url" in result) {
-        if (
-          typeof result.id === "number" &&
-          typeof result.text === "string" &&
-          typeof result.url === "string"
-        ) {
-          setLinks((prev) => [...prev, result as Link]); // ⬅️ Atualiza o estado localmente
-        } else {
-          setError("Ocorreu um erro ao processar o link retornado.");
-        }
+      if (
+        typeof link.id === "number" &&
+        typeof link.text === "string" &&
+        typeof link.url === "string"
+      ) {
+        setLinks((prev) => [...prev, link]);
+        setMessage("Link enviado com sucesso!");
+        setError(null);
+        formRef.current?.reset();
       } else {
-        setError("Ocorreu um erro ao processar o link retornado.");
+        setError("Ocorreu um erro ao processar os dados do link.");
       }
     } else {
-      setError(errorMap.createLink || "Ocorreu um erro. Tente novamente.");
+      setError(
+        result?.error ||
+          errorMap.createLink ||
+          "Ocorreu um erro. Tente novamente."
+      );
       setMessage(null);
     }
   };
@@ -137,11 +136,20 @@ export default function LinkTree() {
     handleCancel();
   };
 
+  const togglePlatform = (value: string) => {
+    setSelectedPlatforms((prev) =>
+      prev.includes(value)
+        ? prev.filter((platform) => platform !== value)
+        : [...prev, value]
+    );
+  };
+
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6">Links</Typography>
 
-      <Stack component="form" spacing={3} onSubmit={handleSubmit}>
+      {/* Formulário de cadastro */}
+      <Stack component="form" spacing={3} onSubmit={handleSubmit} ref={formRef}>
         <TextField
           name="text"
           label="Texto"
@@ -157,37 +165,30 @@ export default function LinkTree() {
           required
         />
 
-        <FormLabel component="legend">Escolha:</FormLabel>
+        {/* Seleção de plataformas */}
         <FormControl component="fieldset">
-          <RadioGroup
-            name="platform-radio-buttons-group"
-            value={selectedPlatforms}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSelectedPlatforms((prev) =>
-                prev.includes(value)
-                  ? prev.filter((platform) => platform !== value)
-                  : [...prev, value]
-              );
-            }}
-          >
-            <Grid container spacing={2}>
-              {platforms.map((platform) => (
-                <Grid key={platform.name}>
-                  <FormControlLabel
-                    value={platform.name}
-                    control={<Radio />}
-                    label={
-                      <Stack direction="row" alignItems="center">
-                        {platform.icon}
-                        <span style={{ marginLeft: 8 }}>{platform.name}</span>
-                      </Stack>
-                    }
+          <FormLabel component="legend" sx={{ mb: 1 }}>
+            Escolha as plataformas:
+          </FormLabel>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            {platforms.map(({ name, icon }) => (
+              <FormControlLabel
+                key={name}
+                control={
+                  <Checkbox
+                    checked={selectedPlatforms.includes(name)}
+                    onChange={() => togglePlatform(name)}
                   />
-                </Grid>
-              ))}
-            </Grid>
-          </RadioGroup>
+                }
+                label={
+                  <Stack direction="row" alignItems="center">
+                    {icon}
+                    <span style={{ marginLeft: 8 }}>{name}</span>
+                  </Stack>
+                }
+              />
+            ))}
+          </Stack>
         </FormControl>
 
         <Button variant="contained" fullWidth type="submit">
@@ -198,76 +199,86 @@ export default function LinkTree() {
         {error && <Alert severity="error">{error}</Alert>}
       </Stack>
 
-      <List
-        sx={{
-          mt: 1,
-          maxHeight: 300,
-          overflowY: "auto",
-          pr: 1,
-        }}
-      >
-        {links.map((link) =>
-          editingId === link.id ? (
-            <ListItem disablePadding key={link.id}>
-              <Stack direction="column" spacing={2} width="100%">
-                <TextField
-                  size="small"
-                  label="Texto"
-                  value={editValues.text || ""}
-                  onChange={(e) =>
-                    setEditValues({ ...editValues, text: e.target.value })
-                  }
-                  fullWidth
-                  required
-                />
+      {/* Lista de links */}
+      <List sx={{ mt: 1, maxHeight: 300, overflowY: "auto", pr: 1 }}>
+        {links.length > 0 ? (
+          links.map((link) => {
+            const isEditing = editingId === link.id;
+            const { text = "", url = "" } = editValues;
 
-                <TextField
-                  size="small"
-                  label="URL"
-                  value={editValues.url || ""}
-                  onChange={(e) =>
-                    setEditValues({ ...editValues, url: e.target.value })
-                  }
-                  fullWidth
-                />
-              </Stack>
-              <IconButton onClick={handleSave}>
-                <Save color="warning" />
-              </IconButton>
-              <IconButton onClick={handleCancel}>
-                <Cancel color="error" />
-              </IconButton>
-            </ListItem>
-          ) : (
-            <ListItem disablePadding key={link.id}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                width="100%"
-              >
-                <ListItemText
-                  primary={link.text}
-                  secondary={
-                    <Link
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {link.url}
-                    </Link>
-                  }
-                />
-                <Stack direction="row">
-                  <IconButton onClick={() => handleEdit(link)}>
-                    <Edit color="warning" />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(link.id)}>
-                    <Delete color="error" />
-                  </IconButton>
-                </Stack>
-              </Stack>
-            </ListItem>
-          )
+            return (
+              <ListItem disablePadding key={link.id}>
+                {isEditing ? (
+                  <Stack direction="column" spacing={2} width="100%">
+                    <TextField
+                      size="small"
+                      label="Texto"
+                      value={text}
+                      onChange={(e) =>
+                        setEditValues((prev) => ({
+                          ...prev,
+                          text: e.target.value,
+                        }))
+                      }
+                      fullWidth
+                      required
+                    />
+                    <TextField
+                      size="small"
+                      label="URL"
+                      value={url}
+                      onChange={(e) =>
+                        setEditValues((prev) => ({
+                          ...prev,
+                          url: e.target.value,
+                        }))
+                      }
+                      fullWidth
+                    />
+                    <Stack direction="row" spacing={1}>
+                      <IconButton onClick={handleSave}>
+                        <Save color="warning" />
+                      </IconButton>
+                      <IconButton onClick={handleCancel}>
+                        <Cancel color="error" />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                ) : (
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <ListItemText
+                      primary={link.text}
+                      secondary={
+                        <Link
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {link.url}
+                        </Link>
+                      }
+                    />
+                    <Stack direction="row">
+                      <IconButton onClick={() => handleEdit(link)}>
+                        <Edit color="warning" />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(link.id)}>
+                        <Delete color="error" />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                )}
+              </ListItem>
+            );
+          })
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            Nenhum link adicionado.
+          </Typography>
         )}
       </List>
     </Paper>

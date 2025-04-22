@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { confirmPasswordReset, resetPassword } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import Return from "@/components/return";
 
 export default function PasswordResetForm() {
   const [email, setEmail] = useState("");
@@ -95,9 +94,6 @@ export default function PasswordResetForm() {
 
   return (
     <>
-      <div className="m-12">
-        <Return />
-      </div>
       <div className="flex justify-center p-6 mt-36">
         <div className=" mx-auto bg-white shadow-md rounded w-full max-w-2xl p-4">
           <h2 className="text-xl font-bold mb-4">

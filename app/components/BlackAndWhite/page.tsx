@@ -8,6 +8,7 @@ import {
   WhatsApp,
   Facebook,
   Instagram,
+  GitHub,
 } from "@mui/icons-material";
 import { useApp } from "@/hook/useApp";
 import { Stack, Typography, Avatar, Button } from "@mui/material";
@@ -66,6 +67,7 @@ export default function ProfessionalTemplate() {
       WhatsApp: <WhatsApp />,
       Facebook: <Facebook />,
       Instagram: <Instagram />,
+      GitHub: <GitHub />,
     };
     return icons[platform] || null;
   };

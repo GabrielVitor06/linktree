@@ -9,7 +9,6 @@ import {
   Alert,
   FormLabel,
   FormControlLabel,
-  Checkbox,
   Paper,
   IconButton,
   List,
@@ -17,6 +16,8 @@ import {
   ListItemText,
   Typography,
   Link,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import {
   Twitter,
@@ -52,7 +53,7 @@ export default function LinkTree() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [links, setLinks] = useState<Link[]>([]);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string>("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValues, setEditValues] = useState<Partial<Link>>({});
   const formRef = useRef<HTMLFormElement>(null);
@@ -73,7 +74,7 @@ export default function LinkTree() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    selectedPlatforms.forEach((p) => formData.append("platforms", p));
+    formData.append("platforms", selectedPlatforms);
 
     const result = await createLink(formData);
     if (result && result.success && result.data) {
@@ -136,19 +137,10 @@ export default function LinkTree() {
     handleCancel();
   };
 
-  const togglePlatform = (value: string) => {
-    setSelectedPlatforms((prev) =>
-      prev.includes(value)
-        ? prev.filter((platform) => platform !== value)
-        : [...prev, value]
-    );
-  };
-
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6">Links</Typography>
 
-      {/* Formulário de cadastro */}
       <Stack component="form" spacing={3} onSubmit={handleSubmit} ref={formRef}>
         <TextField
           name="text"
@@ -165,30 +157,27 @@ export default function LinkTree() {
           required
         />
 
-        {/* Seleção de plataformas */}
         <FormControl component="fieldset">
-          <FormLabel component="legend" sx={{ mb: 1 }}>
-            Escolha as plataformas:
-          </FormLabel>
-          <Stack direction="row" spacing={2} flexWrap="wrap">
+          <FormLabel component="legend">Escolha as plataformas:</FormLabel>
+          <RadioGroup
+            row
+            value={selectedPlatforms}
+            onChange={(e) => setSelectedPlatforms(e.target.value)}
+          >
             {platforms.map(({ name, icon }) => (
               <FormControlLabel
                 key={name}
-                control={
-                  <Checkbox
-                    checked={selectedPlatforms.includes(name)}
-                    onChange={() => togglePlatform(name)}
-                  />
-                }
+                value={name}
+                control={<Radio />}
                 label={
                   <Stack direction="row" alignItems="center">
                     {icon}
-                    <span style={{ marginLeft: 8 }}>{name}</span>
+                    <span>{name}</span>
                   </Stack>
                 }
               />
             ))}
-          </Stack>
+          </RadioGroup>
         </FormControl>
 
         <Button variant="contained" fullWidth type="submit">
@@ -199,12 +188,14 @@ export default function LinkTree() {
         {error && <Alert severity="error">{error}</Alert>}
       </Stack>
 
-      {/* Lista de links */}
-      <List sx={{ mt: 1, maxHeight: 300, overflowY: "auto", pr: 1 }}>
+      <List sx={{ mt: 1, maxHeight: 300, overflowY: "auto" }}>
         {links.length > 0 ? (
           links.map((link) => {
             const isEditing = editingId === link.id;
-            const { text = "", url = "" } = editValues;
+            const { text, url } = editValues;
+
+            const platform = platforms.find((p) => p.name === link.platforms);
+            const icon = platform?.icon;
 
             return (
               <ListItem disablePadding key={link.id}>
@@ -251,7 +242,12 @@ export default function LinkTree() {
                     width="100%"
                   >
                     <ListItemText
-                      primary={link.text}
+                      primary={
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          {icon}
+                          <span>{link.text}</span>
+                        </Stack>
+                      }
                       secondary={
                         <Link
                           href={link.url}

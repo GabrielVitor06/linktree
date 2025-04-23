@@ -8,6 +8,7 @@ import {
   WhatsApp,
   Facebook,
   Instagram,
+  GitHub,
 } from "@mui/icons-material";
 import { useApp } from "@/hook/useApp";
 import { Stack, Typography, Avatar, Button } from "@mui/material";
@@ -62,13 +63,14 @@ export default function ProfessionalTemplate() {
 
   const getIcon = (platform: string) => {
     const icons: Record<string, JSX.Element> = {
-      Twitter: <Twitter />,
-      LinkedIn: <LinkedIn />,
-      WhatsApp: <WhatsApp />,
-      Facebook: <Facebook />,
-      Instagram: <Instagram />,
+      twitter: <Twitter />,
+      linkedin: <LinkedIn />,
+      whatsapp: <WhatsApp />,
+      facebook: <Facebook />,
+      instagram: <Instagram />,
+      github: <GitHub />,
     };
-    return icons[platform] || null;
+    return icons[platform.toLowerCase()] || null; // Verificação case-insensitive
   };
 
   return (

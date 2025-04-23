@@ -7,14 +7,10 @@ import {
 } from "@/lib/publicActions";
 
 interface PageProps {
-  params: {
-    username: string;
-  };
+  username: string;
 }
 
-export default async function PublicPage({ params }: PageProps) {
-  const { username } = params;
-
+export default async function PublicPage({ username }: PageProps) {
   const userId = await getUserIdByUsername(username);
   if (!userId) return notFound();
 
@@ -31,6 +27,16 @@ export default async function PublicPage({ params }: PageProps) {
   return <TemplateComponent />;
 }
 
-export async function generateStaticParams() {
-  return [];
+export async function getServerSideProps({
+  params,
+}: {
+  params: { username: string };
+}) {
+  const { username } = params;
+
+  return {
+    props: {
+      username,
+    },
+  };
 }

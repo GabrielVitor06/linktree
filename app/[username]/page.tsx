@@ -7,10 +7,14 @@ import {
 } from "@/lib/publicActions";
 
 interface PageProps {
-  username: string;
+  params: Promise<{
+    username: string;
+  }>;
 }
 
-export default async function PublicPage({ username }: PageProps) {
+export default async function PublicPage({ params }: PageProps) {
+  const { username } = await params;
+
   const userId = await getUserIdByUsername(username);
   if (!userId) return notFound();
 
@@ -27,6 +31,7 @@ export default async function PublicPage({ username }: PageProps) {
   return <TemplateComponent />;
 }
 
+// Garante que o Next entenda que isso é uma rota dinâmica válida
 export async function generateStaticParams() {
   return [];
 }

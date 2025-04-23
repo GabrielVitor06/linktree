@@ -170,7 +170,7 @@ export default function LinkTree() {
                 value={name}
                 control={<Radio />}
                 label={
-                  <Stack direction="row" alignItems="center">
+                  <Stack direction="row" alignItems="center" spacing={1}>
                     {icon}
                     <span>{name}</span>
                   </Stack>

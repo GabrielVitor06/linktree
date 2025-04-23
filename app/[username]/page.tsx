@@ -27,16 +27,6 @@ export default async function PublicPage({ username }: PageProps) {
   return <TemplateComponent />;
 }
 
-export async function getServerSideProps({
-  params,
-}: {
-  params: { username: string };
-}) {
-  const { username } = params;
-
-  return {
-    props: {
-      username,
-    },
-  };
+export async function generateStaticParams() {
+  return [];
 }
